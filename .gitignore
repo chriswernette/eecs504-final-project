@@ -1,1 +1,3 @@
 .vscode/
+failed-models/
+.pylintrc
