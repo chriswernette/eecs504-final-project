@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
  
-video = cv2.VideoCapture("road_car_view.mp4")
+video = cv2.VideoCapture("../data/road_car_view.mp4")
  
 while True:
     ret, orig_frame = video.read()
