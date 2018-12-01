@@ -19,20 +19,14 @@ This will download all the files necessary for the project. To run the project o
 # Modules
 This section has a basic list of who is doing what and describes what the inputs and outputs of the modules should look like.
 
-## Wrapper function - team
-File that will set up input files, call other modules. Basically a main function that will call all the modules we are writing one after another.
+## billboard-detector.py - team
+File that will set up input files, call other modules. I intend to set this up so you can specify high level args like video filename/images directory when you call it from the command line.
 
-## Cropping - Chris
-This function takes in an image and crops it to be in the quadrant specified in the main wrapper function.
-
-## Edge Detection - Chris
-This will take in the cropped image and output a binary image using Canny edge detection or Harris Corners.
+## preprocessing.py - Chris
+This function takes in an image and handles all the preprocessing. The output will be Hough lines in (x1, y1), (x2, y2) format. Submodules of this function are cropping, edge detection, and Hough lines. The preprocessing module will make calls to the sign masking module to exclude edges/Hough lines resulting from Michigan highway signs.
 
 ## Sign Masking - Alex
 @TODO Alex describe however you want.
-
-## Hough Lines -Chris
-This will take in the binary edge detected image and the mask to ignore Michigan highway signs, and remove edges detected within those masks, and then on the remaining edges it will apply the Hough lines detection algorithm. The output of this function will be a set of 2 points which can be used to define a line. At each element of the last are (x1,y1) (x2,y2).
 
 ## Hough Lines Intersections - Chris
 This will take in the endpoints of all the lines, and then find their intersections by parameterizing each line. Also, it will reject intersections that are not close to 90 degrees to eliminate false positives. The output of this function is a list of (x,y) coordinates that meet the criteria of being a valid intersection of two nearly perpendicular lines.
