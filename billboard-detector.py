@@ -41,4 +41,13 @@ plt.show()
 
 #find intersections of Hough lines
 intersections = fi.segmented_intersections(lines)
-print(intersections)
+
+#print(intersections.shape)
+#print(intersections)
+
+x = intersections[:,0]
+y = intersections[:,1]
+
+plt.imshow(img_RGB)
+plt.scatter(x, y, c='r', s=40)
+plt.show()

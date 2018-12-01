@@ -5,7 +5,8 @@
 import numpy as np
 
 def find_intersection(line1, line2):
-    #function to find the intersections of 2 Hough lines
+    '''function to find the intersections of 2 Hough lines. The results are
+    returned in a #intersections X 2 numpy array, with each row being (x,y)'''
 
     '''since we are given two points on the lines, which are endpoints we can 
     use something called the first degree Bezier parameters solved by determinants
@@ -61,7 +62,7 @@ def find_intersection(line1, line2):
         #add to intersection list
         if((checkT or checkU) and ((angleDiff > 75) and (angleDiff < 105))):
             #print('The intercept from is (' + str(xInt) + ',' + str(yInt) + ')')
-            intersection = [[xInt,yInt]]
+            intersection = [xInt,yInt]
 
     return intersection 
 
@@ -69,6 +70,8 @@ def find_intersection(line1, line2):
 def segmented_intersections(lines):
     #function to find the intersection between all lines
 
+    '''got this from online. Makes it so you only grab unique intersections,
+    I don't understand it that well tbh'''
     intersections = []
     for i, group in enumerate(lines[:-1]):
         for next_group in lines[i+1:]:
@@ -76,4 +79,7 @@ def segmented_intersections(lines):
                 for line2 in next_group:
                     intersections.append(find_intersection(line1, line2)) 
     
+    #remove empty items in the list
+    intersections = [t for t in intersections if t]
+    intersections = np.asarray(intersections)
     return intersections
