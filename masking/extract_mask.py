@@ -18,7 +18,7 @@ def main():
     cv2.rectangle(mask, (132,81), (432,173), (255,255,255), -1)
     # Combines the mask + image
     maskedImg = cv2.bitwise_and(img, mask)
-
+    np.save('maskedImg1.npy',maskedImg)
     #Display Results
     plt.figure()
     plt.imshow(maskedImg)
@@ -38,7 +38,7 @@ def main():
     # [pts] is an array of polygons, so we can make multiple masked regions per image
     cv2.fillPoly(mask, [pts], (255,255,255))
     maskedImg = cv2.bitwise_and(img, mask)
-
+    np.save('maskedImg2.npy',maskedImg)
     plt.figure()
     plt.imshow(maskedImg)
     plt.show()
