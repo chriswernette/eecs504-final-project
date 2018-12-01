@@ -1,3 +1,5 @@
 .vscode/
 failed-models/
 .pylintrc
+__pycache__/
+testing.py
