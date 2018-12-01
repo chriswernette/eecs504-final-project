@@ -38,7 +38,7 @@ def main():
     # [pts] is an array of polygons, so we can make multiple masked regions per image
     cv2.fillPoly(mask, [pts], (255,255,255))
     maskedImg = cv2.bitwise_and(img, mask)
-
+    np.save(maskedImg)
     plt.figure()
     plt.imshow(maskedImg)
     plt.show()
