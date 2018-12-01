@@ -37,8 +37,8 @@ This function will take in the list of intersections, and bin nearby intersectio
 ## Billboard Corner Hypothesis - Peter
 @TODO Peter describe however you want.
 
-## Homography - Moe
-@TODO Moe describe however you want
+## Billboard extraction and projection onto Vehicle Windshield - Moe
+This function takes the 4 corner hypothesis and projects the billboard onto the Heads Up Display(HUD). The projection is a function of where the passengers eyes are fixed onto the windshield. 
 
 ## Stitch Homography Images into Video - Team
 @TODO I think if we put the adds projected onto the windshield all in one array this should be super easy there's gotta be code to do this.
