@@ -7,7 +7,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import find_intersections as fi
 from preprocessing import preprocess_data
-
+from cluster_corners import cluster_corners
 
 #read in image
 img_location = "data/real-billboard.jpg"
@@ -27,7 +27,7 @@ plt.imshow(edges,cmap='gray')
 plt.title('Canny edges')
 plt.show() 
 
-print("Number of lines in image: " + str(len(lines)))
+#print("Number of lines in image: " + str(len(lines)))
 
 #put Hough lines on the cropped image
 for line in lines:
@@ -50,4 +50,39 @@ y = intersections[:,1]
 
 plt.imshow(img_RGB)
 plt.scatter(x, y, c='r', s=40)
+plt.title('Hough line intersections laid on top of Hough lines')
 plt.show()
+
+
+#apply clustering algorithm
+labels, cluster_centers = cluster_corners(intersections)
+
+
+x = cluster_centers[:,0]
+y = cluster_centers[:,1]
+
+print('x,y locations of centroids')
+print(cluster_centers)
+
+plt.imshow(img_RGB)
+plt.scatter(x, y, c='r', s=40)
+plt.title('Cluster Centroids laid on top of Hough lines')
+plt.show()
+
+
+
+
+#defunct testing code beyond this line
+################################################################################
+#testing Harris Corners, goodFeaturesToTrack is what we implemented in hw3
+# corners = cv2.goodFeaturesToTrack(gray_cropped,100,.1,10)
+# corners = np.int0(corners)
+# corners = corners.reshape((corners.shape[0],2))
+# x = corners[:,0]
+# y = corners[:,1]
+
+
+# plt.imshow(img_RGB)
+# plt.scatter(x,y,c='r',s=40)
+# plt.title('Corners from cv2.goodFeaturesToTrack laid on top of hough lines')
+# plt.show()
