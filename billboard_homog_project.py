@@ -4,10 +4,13 @@ import cv2
 import matplotlib.pyplot as plt
 import eta.core.image as etai
 
-def main(args):
+def billboard_homog_project(pts1,maskedImg):
+    #pts1 is a numpy array, 4x2 which contains coordinates for bounding of image mask
+    # image mask is is mask for image where contains billboard, else 0,0,0
+     
     # points from mask which bound billboard
-    pts1 = np.array([[139,157],[142,213],[328,128],[319,39]])
-    maskedImg = np.load('maskedImg2.npy')
+    #pts1 = np.array([[139,157],[142,213],[328,128],[319,39]])
+    #maskedImg = np.load('maskedImg2.npy')
     #Predefined cooredinates we wish to project bilboard onto 
     #moe car driver perspect
     pts2 = np.array([[1460,1000],[1460,1618],[2658,1618],[2658,1000]])
@@ -23,7 +26,5 @@ def main(args):
   
     plt.imshow(added_image)    
     plt.show()
+    return added_image
 
-if __name__ == '__main__':
-    import sys
-    sys.exit(main(sys.argv))
