@@ -32,7 +32,7 @@ This function takes in an image and handles all the preprocessing. The output wi
 This will take in the endpoints of all the lines, and then find their intersections by parameterizing each line. Also, it will reject intersections that are not close to 90 degrees to eliminate false positives. The output of this function is a list of (x,y) coordinates that meet the criteria of being a valid intersection of two nearly perpendicular lines. See [Line-Line Intersection](https://en.wikipedia.org/wiki/Line%E2%80%93line_intersection) given two points on each line section.
 
 ## cluster_corners.py - Chris
-This function will take in the list of intersections, and bin nearby intersections to a centroid. The output of this is a reduced number of possible intersections for the corners of the billboard. Uses the Mean Shift clustering method from scikit-learn, you can find a demo here [A demo of the mean-shift clustering algorithm](https://scikit-learn.org/stable/auto_examples/cluster/plot_mean_shift.html)
+This function will take in the list of intersections, and bin nearby intersections to a centroid. The output of this is a reduced number of possible intersections for the corners of the billboard. Uses the Mean Shift clustering method from scikit-learn, you can find a demo here [A demo of the mean-shift clustering algorithm](https://scikit-learn.org/stable/auto_examples/cluster/plot_mean_shift.html) and a summary of clustering algorithms available from scikit-learn can be found here [2.3 Clustering](https://scikit-learn.org/stable/modules/clustering.html#mean-shift)
 
 ## Billboard Corner Hypothesis - Peter
 @TODO Peter describe however you want.
