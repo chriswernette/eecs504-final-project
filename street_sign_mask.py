@@ -9,7 +9,7 @@ def street_sign_mask(img):
     #Green - 0,153, 0; Blue - 0,0,255; 
     #Orange - 255,102,0; Yellow - 255,204,0
     #Define range for each color
-    green_lower_limit = np.array([0, 255, 80]) 
+    green_lower_limit = np.array([0, 200, 80]) 
     green_upper_limit = np.array([100,255, 120]) 
     blue_lower_limit = np.array([100, 150, 100]) 
     blue_upper_limit = np.array([157, 255, 255]) 
