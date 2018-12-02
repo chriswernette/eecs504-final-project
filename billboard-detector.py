@@ -57,12 +57,11 @@ plt.show()
 #apply clustering algorithm
 labels, cluster_centers = cluster_corners(intersections)
 
-
 x = cluster_centers[:,0]
 y = cluster_centers[:,1]
 
-print('x,y locations of centroids')
-print(cluster_centers)
+#print('x,y locations of centroids')
+#print(cluster_centers)
 
 plt.imshow(img_RGB)
 plt.scatter(x, y, c='r', s=40)
@@ -70,6 +69,38 @@ plt.title('Cluster Centroids laid on top of Hough lines')
 plt.show()
 
 
+#set up binary image of just points for the contour detection algorithm/convex Hull
+clust_int = np.int0(cluster_centers)
+#print(clust_int)
+
+test_img = np.zeros_like(gray_cropped)
+#print(test_img.shape)
+for i in range(clust_int.shape[0]):
+    x,y = clust_int[i]
+    test_img[y,x] = 1
+
+plt.imshow(test_img)
+plt.show()
+
+print(clust_int.shape)
+
+dist = np.linalg.norm(clust_int,axis=1).reshape(clust_int.shape[0],1)
+print(dist)
+idx = np.argsort(dist,axis=0)
+print(idx)
+# clust_add_dist = np.hstack((clust_int,dist))
+# print(clust_add_dist.shape)
+# print(clust_add_dist)
+# idx = np.argsort(clust_add_dist,axis=0)
+# dist_sorted = idx[:,2]
+# print(dist_sorted)
+
+clust_dist_sorted = clust_int[idx]
+print(clust_dist_sorted)
+#print(clust_dist_sorted)
+
+# cv2.imshow('draw contrours',im2)
+# cv2.waitKey(0)
 
 
 #defunct testing code beyond this line
