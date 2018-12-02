@@ -28,11 +28,11 @@ This function takes in an image and handles all the preprocessing. The output wi
 ## Sign Masking - Alex
 @TODO Alex describe however you want.
 
-## Hough Lines Intersections - Chris
-This will take in the endpoints of all the lines, and then find their intersections by parameterizing each line. Also, it will reject intersections that are not close to 90 degrees to eliminate false positives. The output of this function is a list of (x,y) coordinates that meet the criteria of being a valid intersection of two nearly perpendicular lines.
+## find_intersections.py - Chris
+This will take in the endpoints of all the lines, and then find their intersections by parameterizing each line. Also, it will reject intersections that are not close to 90 degrees to eliminate false positives. The output of this function is a list of (x,y) coordinates that meet the criteria of being a valid intersection of two nearly perpendicular lines. See [Line-Line Intersection](https://en.wikipedia.org/wiki/Line%E2%80%93line_intersection) given two points on each line section.
 
-## Hough Lines Intersections Clustering - Chris
-This function will take in the list of intersections, and bin nearby intersections to a mean intersection. It may also weight them based on how many intersections that are nearby and how close they are to each other. The output of this should be a reduced number of possible intersections for the corners of the billboard.
+## cluster_corners.py - Chris
+This function will take in the list of intersections, and bin nearby intersections to a centroid. The output of this is a reduced number of possible intersections for the corners of the billboard.
 
 ## Billboard Corner Hypothesis - Peter
 @TODO Peter describe however you want.
