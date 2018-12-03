@@ -12,6 +12,7 @@ from polygon import form_polygon, plot_mask
 
 #read in image, this is where you specify the jpg you want to read in
 img_location = "data/real-billboard.jpg"
+#img_location = "data/Billboard-dataset/B3_3_1.PNG"
 
 '''calls preprocess script to crop the image to the upper right hand quadrant,
 grayscale and blur the crop, find Canny edges and Hough lines from the cropped 

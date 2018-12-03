@@ -37,6 +37,7 @@ def sort_clusters(clusters, img):
 
 def smooth_polygon(ccw_clusters, BL):
 	# Smooths polygon
+	# TODO: Can remove bad points from convex hull contour
 	UR = BL + 1
 	UL = 0
 	BR = ccw.shape[0]-1
