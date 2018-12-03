@@ -4,7 +4,12 @@ import cv2
 import matplotlib.pyplot as plt
 import eta.core.image as etai
 
-def form_polygon(clusters):
+def form_polygon(clusters, img):
+	# Wrapper for fitting a polygon
+	# to A SINGLE BILLBOARD
+	return sort_clusters(clusters, img)
+
+def sort_clusters(clusters, img):
 	# Sort clusters by euclidean distance from the origin
 	idx = np.argsort(np.linalg.norm(clusters,axis=-1))
 	clusters = clusters[idx]
@@ -19,16 +24,33 @@ def form_polygon(clusters):
 	# then combine with the left-hand billboard clusters
 	# to put points in counter-clockwise order
 	ccw_clusters = np.concatenate((clusters[:UR],clusters[UR:][::-1]),axis=0)
+	corners = np.array([ccw_clusters[0], ccw_clusters[BL],
+						ccw_clusters[UR], ccw_clusters[-1]])
 
-	return ccw_clusters
+	hull = cv2.convexHull(np.array([clusters], dtype='int32'))
+	plot_mask(img, ccw_clusters, 'CCW Clusters')
+	plot_mask(img, corners, 'OG Corner Clusters')
+	plot_mask(img, hull, 'cv2 Convex Hull')
 
-def plot_mask(img, ccw_clusters):
+
+	return ccw_clusters, corners
+
+def smooth_polygon(ccw_clusters, BL):
+	# Smooths polygon
+	UR = BL + 1
+	UL = 0
+	BR = ccw.shape[0]-1
+
+	return
+
+
+def plot_mask(img, pts, title):
 	mask = np.zeros(img.shape, dtype="uint8")
-	# pts represents 4 corners of polygon (do not need to be rectangular)
-	pts = np.array(ccw_clusters, dtype='int32')
-	# [pts] is an array of polygons, so we can make multiple masked regions per image
+	pts = np.array(pts, dtype='int32')
 	cv2.fillPoly(mask, [pts], (255,255,255))
 	maskedImg = cv2.bitwise_and(img, mask)
 	plt.figure()
 	plt.imshow(maskedImg)
+	plt.title(title)
 	plt.show()
+	return

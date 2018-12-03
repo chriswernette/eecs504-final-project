@@ -89,9 +89,7 @@ get that correct order by finding the distance between each point, and reversing
 the array when we are about to go from bottom left corner -> upper right corner
 so it goes from bottom left corner -> bottom right corner'''
 
-ccw_clusters = form_polygon(cluster_centers)
-plot_mask(img_RGB, ccw_clusters)
-
+ccw_clusters, corners = form_polygon(cluster_centers, img_RGB)
 
 #defunct testing code beyond this line
 ################################################################################
