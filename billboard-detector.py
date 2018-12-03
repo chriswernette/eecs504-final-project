@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 import find_intersections as fi
 from preprocessing import preprocess_data
 from cluster_corners import cluster_corners
+from polygon import form_polygon, plot_mask
 
 #read in image, this is where you specify the jpg you want to read in
 img_location = "data/real-billboard.jpg"
@@ -87,6 +88,10 @@ would draw a box around the mask. So, Peter is working on a function that will
 get that correct order by finding the distance between each point, and reversing
 the array when we are about to go from bottom left corner -> upper right corner
 so it goes from bottom left corner -> bottom right corner'''
+
+ccw_clusters = form_polygon(cluster_centers)
+plot_mask(img_RGB, ccw_clusters)
+
 
 #defunct testing code beyond this line
 ################################################################################
