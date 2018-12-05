@@ -2,10 +2,11 @@ import cv2
 import numpy as np
 
 #Based on https://www.learnopencv.com/read-write-and-display-a-video-using-opencv-cpp-python/
-  
+# Inputs: video_path - string of the path to video; t_start & t_end - start and end times in seconds of the section of video you want to capture
+
 def frame_to_jpeg(video_path, t_start, t_end):
     #Create Video Capture
-    vid_cap = cv2.VideoCapture('2018_1130_120220_027.MOV')
+    vid_cap = cv2.VideoCapture(video_path)
     count = 0
     frame_count = 0
     # Determine Start and End Frame - 30fps
@@ -28,7 +29,7 @@ def frame_to_jpeg(video_path, t_start, t_end):
             if (count % 15 == 0):
                 #cv2.imshow('Frame',frame)
                 frame_count += 1
-                cv2.imwrite("frame%d.jpg" % frame_count, frame)
+                cv2.imwrite("frame%02d.jpg" % frame_count, frame)
 
         # Press Q on keyboard to  exit
         if cv2.waitKey(25) & 0xFF == ord('q'):
