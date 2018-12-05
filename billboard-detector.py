@@ -6,9 +6,11 @@ import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 import find_intersections as fi
+from polygon2 import polygon2
 from preprocessing import preprocess_data
 from cluster_corners import cluster_corners
 from polygon import form_polygon, plot_mask
+from skimage.morphology import convex_hull_image
 
 #read in image, this is where you specify the jpg you want to read in
 img_location = "data/real-billboard.jpg"
@@ -19,6 +21,8 @@ grayscale and blur the crop, find Canny edges and Hough lines from the cropped
 grayscale. In the future, I'll add inputs so you can specify where the function
 looks for billboards in the image. Right now it just looks in the upper right'''
 gray_cropped, img_cropped, edges, lines = preprocess_data(img_location)
+img_cropped2 = np.copy(img_cropped)
+img_cropped2 = cv2.cvtColor(img_cropped2,cv2.COLOR_BGR2RGB)
 
 #show what the gray blurred image looks like
 plt.imshow(gray_cropped,cmap='gray')
@@ -67,18 +71,10 @@ plt.scatter(x, y, c='r', s=40)
 plt.title('Cluster Centroids laid on top of Hough lines')
 plt.show()
 
-#need to convert cluster locations to integer so we're at valid pixel locations
-clust_int = np.int0(cluster_centers)
-
-'''compute the distance from the upper left hand corner of the image (0,0) and
-use that to sort. The upper left hand corner should have the least distance and
-the lower right should have the largest.'''
-dist = np.linalg.norm(clust_int,axis=1).reshape(clust_int.shape[0],1)
-#print(dist)
-idx = np.argsort(dist,axis=0)
-#print(idx)
-clust_dist_sorted = clust_int[idx]
-print(clust_dist_sorted)
+masked_img = polygon2(cluster_centers,img_cropped2)
+plt.imshow(masked_img)
+plt.title('The masked man approaches')
+plt.show()
 
 '''@TODO Peter is working on a function that will order these correctly for
 drawing a polygon. Basically the issue is the cluster points go down the left
@@ -119,3 +115,14 @@ ccw_clusters, corners = form_polygon(cluster_centers, img_RGB)
 
 # plt.imshow(test_img)
 # plt.show()
+
+################################################################################
+'''compute the distance from the upper left hand corner of the image (0,0) and
+use that to sort. The upper left hand corner should have the least distance and
+the lower right should have the largest.'''
+#dist = np.linalg.norm(clust_int,axis=1).reshape(clust_int.shape[0],1)
+#print(dist)
+#idx = np.argsort(dist,axis=0)
+#print(idx)
+#clust_dist_sorted = clust_int[idx]
+#print(clust_dist_sorted)
