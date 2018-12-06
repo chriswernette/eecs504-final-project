@@ -13,8 +13,8 @@ def billboard_homog_project(pts1,maskedImg):
     #maskedImg = np.load('maskedImg2.npy')
     #Predefined cooredinates we wish to project bilboard onto 
     #moe car driver perspect
-    pts2 = np.array([[1460,1000],[1460,1618],[2658,1618],[2658,1000]])
-    carimg = etai.read('data/IMG_20181201_151043.jpg')
+    pts2 = np.array([[1335,1257],[1335,1804],[2585,1804],[2585,1257]])
+    carimg = etai.read('data/driverside.jpg')
     #moe GM car
     # pts2 = np.array([[327,80],[327,150],[472,150],[472,80]])
     # carimg = etai.read('data/GM-CruiseAV-800x534.jpg')
