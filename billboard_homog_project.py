@@ -22,7 +22,7 @@ def billboard_homog_project(pts1,maskedImg):
     H,_ = cv2.findHomography(pts1, pts2)
     #image mask in the HUD perpective
     maskedImg_perspHUD = cv2.warpPerspective(maskedImg, H,(carimg.shape[1],carimg.shape[0]))
-    added_image = cv2.addWeighted(carimg,1,maskedImg_perspHUD,0.5,0)
+    added_image = cv2.addWeighted(carimg,1,maskedImg_perspHUD,1,0)
   
     plt.imshow(added_image)    
     plt.show()

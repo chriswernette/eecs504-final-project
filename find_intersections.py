@@ -46,8 +46,8 @@ def find_intersection(line1, line2):
         u = -((x1-x2)*(y1-y3) -(y1-y2)*(x1-x3))/denominator
 
         #give a little wiggle room for rounding error
-        checkT = (-0.05<=t) and (t<=1.05)
-        checkU = (-0.05<=u) and (u<=1.05)
+        checkT = (0<=t) and (t<=1)
+        checkU = (0<=u) and (u<=1)
         #print('The value of t is ' + str(t))
         #print('The value of u is ' + str(u))
 
@@ -61,7 +61,9 @@ def find_intersection(line1, line2):
         
         #add to intersection list
         if((checkT or checkU) and ((angleDiff > 75) and (angleDiff < 105))):
-            #print('The intercept from is (' + str(xInt) + ',' + str(yInt) + ')')
+            print('This intercept is (' + str(xInt) + ',' + str(yInt) + ')')
+            print('and the angle difference is')
+            print(angleDiff)
             intersection = [xInt,yInt]
 
     return intersection 

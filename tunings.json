@@ -1,0 +1,15 @@
+################################################################################
+tuning values for Data/real-billboard.jpg
+canny_min = 125
+canny_max = 150
+hough_thresh = 30
+hough_min_ll = 100
+hough_max_gap = 35
+
+################################################################################
+tuning values for Data/frame14.jpg
+canny_min = 100
+canny_max = 125
+hough_thresh = 30
+hough_min_ll = 100
+hough_max_gap = 35

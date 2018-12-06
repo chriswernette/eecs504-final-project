@@ -7,19 +7,26 @@ import os
 import numpy as np
 import matplotlib.pyplot as plt
 import find_intersections as fi
+from billboard_homog_project import billboard_homog_project
 from polygon2 import polygon2
 from preprocessing import preprocess_data
 from cluster_corners import cluster_corners
 from polygon import form_polygon, plot_mask
 from skimage.morphology import convex_hull_image
 
+#set tunable parameters
+canny_min = 50
+canny_max = 75
+hough_thresh = 30
+hough_min_ll = 50
+hough_max_gap = 35
 
 #if mode  = 0, single image, if mode = 1 read in entire directory
-mode = 1
+mode = 0
 
 #read in image
 if(mode == 0):
-    files = "data/real-billboard.jpg"
+    files = "data/frame14.jpg"
     num_files = 1
 elif(mode == 1):
     path = '/home/chris/Documents/eecs/eecs_504/eecs504-final-project/data/Test_Images/_021_first_15/'
@@ -41,7 +48,12 @@ for i in range(num_files):
     grayscale and blur the crop, find Canny edges and Hough lines from the cropped 
     grayscale. In the future, I'll add inputs so you can specify where the function
     looks for billboards in the image. Right now it just looks in the upper right'''
-    gray_cropped, img_cropped, edges, lines = preprocess_data(img_location)
+    img = cv2.imread(img_location)
+    img = cv2.cvtColor(img,cv2.COLOR_BGR2RGB)
+    plt.imshow(img)
+    plt.show()
+    gray_cropped, img_cropped, edges, lines = preprocess_data(img_location,canny_min,
+                                                canny_max,hough_thresh,hough_min_ll,hough_max_gap)
     img_cropped2 = np.copy(img_cropped)
     img_cropped2 = cv2.cvtColor(img_cropped2,cv2.COLOR_BGR2RGB)
 
@@ -92,10 +104,11 @@ for i in range(num_files):
     plt.title('Cluster Centroids laid on top of Hough lines')
     plt.show()
 
-    masked_img = polygon2(cluster_centers,img_cropped2)
+    masked_img, corners_final = polygon2(cluster_centers,img_cropped2)
     plt.imshow(masked_img)
     plt.title('The masked man approaches')
     plt.show()
+
 
     '''@TODO Peter is working on a function that will order these correctly for
     drawing a polygon. Basically the issue is the cluster points go down the left
@@ -107,7 +120,13 @@ for i in range(num_files):
     the array when we are about to go from bottom left corner -> upper right corner
     so it goes from bottom left corner -> bottom right corner'''
 
-    ccw_clusters, corners = form_polygon(cluster_centers, img_RGB)
+    ccw_clusters, corners, masked_img = form_polygon(cluster_centers, img_cropped2)
+    
+    print('Chris corners')
+    print(corners_final)
+    print('Peter corners')
+    print(corners)
+    billboard_homog_project(corners_final,masked_img)
 
     #defunct testing code beyond this line
     ################################################################################

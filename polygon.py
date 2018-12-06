@@ -30,10 +30,10 @@ def sort_clusters(clusters, img):
 	hull = cv2.convexHull(np.array([clusters], dtype='int32'))
 	plot_mask(img, ccw_clusters, 'CCW Clusters')
 	plot_mask(img, corners, 'OG Corner Clusters')
-	plot_mask(img, hull, 'cv2 Convex Hull')
+	masked_img = plot_mask(img, hull, 'cv2 Convex Hull')
 
 
-	return ccw_clusters, corners
+	return ccw_clusters, corners, masked_img
 
 def smooth_polygon(ccw_clusters, BL):
 	# Smooths polygon
@@ -54,4 +54,4 @@ def plot_mask(img, pts, title):
 	plt.imshow(maskedImg)
 	plt.title(title)
 	plt.show()
-	return
+	return maskedImg
