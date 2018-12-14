@@ -3,6 +3,7 @@ command line arguments in the future, for now change the img = cv.imread command
 to change the image you're running on'''
 
 import cv2
+import sys
 import os
 import numpy as np
 import matplotlib.pyplot as plt
@@ -21,29 +22,11 @@ hough_thresh = 30
 hough_min_ll = 50
 hough_max_gap = 35
 
-#if mode  = 0, single image, if mode = 1 read in entire directory
-mode = 0
-
-#read in image
-if(mode == 0):
-    files = "data/frame14.jpg"
-    num_files = 1
-elif(mode == 1):
-    path = '/home/chris/Documents/eecs/eecs_504/eecs504-final-project/data/Test_Images/_021_first_15/'
-    files = os.listdir(path)
-    files.sort()
-    num_files = len(files)
-    for i in range(len(files)):
-        files[i] = path + files[i]
-        print(files[i])
+DEBUG = False
 
 
-#loop through the selected files
-for i in range(num_files):
-    if(mode == 0):
-        img_location = files
-    elif(mode == 1):
-        img_location = files[i]
+
+def detect_billboard(img_location):
     '''calls preprocess script to crop the image to the upper right hand quadrant,
     grayscale and blur the crop, find Canny edges and Hough lines from the cropped 
     grayscale. In the future, I'll add inputs so you can specify where the function
@@ -57,15 +40,16 @@ for i in range(num_files):
     img_cropped2 = np.copy(img_cropped)
     img_cropped2 = cv2.cvtColor(img_cropped2,cv2.COLOR_BGR2RGB)
 
-    #show what the gray blurred image looks like
-    plt.imshow(gray_cropped,cmap='gray')
-    plt.title('Grayscale image')
-    plt.show()
+    if DEBUG:
+	    #show what the gray blurred image looks like
+	    plt.imshow(gray_cropped,cmap='gray')
+	    plt.title('Grayscale image')
+	    plt.show()
 
-    #show what the Canny edges look like
-    plt.imshow(edges,cmap='gray')
-    plt.title('Canny edges')
-    plt.show() 
+	    #show what the Canny edges look like
+	    plt.imshow(edges,cmap='gray')
+	    plt.title('Canny edges')
+	    plt.show() 
 
     #put Hough lines on the cropped image one at a time just to visualize
     for line in lines:
@@ -74,9 +58,11 @@ for i in range(num_files):
 
     #convert from BGR (openCV format) to RGB (matplotlib format) and show the lines
     img_RGB = cv2.cvtColor(img_cropped, cv2.COLOR_BGR2RGB)
-    plt.imshow(img_RGB)
-    plt.title("cropped image with hough lines")
-    plt.show()
+
+    if DEBUG:
+	    plt.imshow(img_RGB)
+	    plt.title("cropped image with hough lines")
+	    plt.show()
 
     #find intersections of Hough lines
     intersections = fi.segmented_intersections(lines)
@@ -85,11 +71,12 @@ for i in range(num_files):
     x = intersections[:,0]
     y = intersections[:,1]
 
-    #show the image w/lines and then put a scatter plot of the intersections on top
-    plt.imshow(img_RGB)
-    plt.scatter(x, y, c='r', s=40)
-    plt.title('Hough line intersections laid on top of Hough lines')
-    plt.show()
+    if DEBUG:
+	    #show the image w/lines and then put a scatter plot of the intersections on top
+	    plt.imshow(img_RGB)
+	    plt.scatter(x, y, c='r', s=40)
+	    plt.title('Hough line intersections laid on top of Hough lines')
+	    plt.show()
 
     #find the clusters of the intersections - basically reduce the number of points
     labels, cluster_centers = cluster_corners(intersections)
@@ -98,16 +85,18 @@ for i in range(num_files):
     x = cluster_centers[:,0]
     y = cluster_centers[:,1]
 
-    #plot the cluster locations as a scatter plot on top of the lines image
-    plt.imshow(img_RGB)
-    plt.scatter(x, y, c='r', s=40)
-    plt.title('Cluster Centroids laid on top of Hough lines')
-    plt.show()
+    if DEBUG:
+	    #plot the cluster locations as a scatter plot on top of the lines image
+	    plt.imshow(img_RGB)
+	    plt.scatter(x, y, c='r', s=40)
+	    plt.title('Cluster Centroids laid on top of Hough lines')
+	    plt.show()
 
     masked_img, corners_final = polygon2(cluster_centers,img_cropped2)
-    plt.imshow(masked_img)
-    plt.title('The masked man approaches')
-    plt.show()
+    if DEBUG:
+	    plt.imshow(masked_img)
+	    plt.title('The masked man approaches')
+	    plt.show()
 
 
     '''@TODO Peter is working on a function that will order these correctly for
@@ -122,10 +111,12 @@ for i in range(num_files):
 
     ccw_clusters, corners, masked_img = form_polygon(cluster_centers, img_cropped2)
     
-    print('Chris corners')
-    print(corners_final)
-    print('Peter corners')
-    print(corners)
+    if DEBUG:
+	    print('Chris corners')
+	    print(corners_final)
+	    print('Peter corners')
+	    print(corners)
+
     billboard_homog_project(corners_final,masked_img)
 
     #defunct testing code beyond this line
@@ -166,3 +157,32 @@ for i in range(num_files):
     #print(idx)
     #clust_dist_sorted = clust_int[idx]
     #print(clust_dist_sorted)
+
+def main(args):
+	#if mode  = 0, single image, if mode = 1 read in entire directory
+	mode = 0
+
+	#read in image
+	if(mode == 0):
+	    files = "data/frame14.jpg"
+	    num_files = 1
+	elif(mode == 1):
+	    path = '/home/chris/Documents/eecs/eecs_504/eecs504-final-project/data/Test_Images/_021_first_15/'
+	    files = os.listdir(path)
+	    files.sort()
+	    num_files = len(files)
+	    for i in range(len(files)):
+	        files[i] = path + files[i]
+	        print(files[i])
+
+	#loop through the selected files
+	for i in range(num_files):
+	    if(mode == 0):
+	        img_location = files
+	    elif(mode == 1):
+	        img_location = files[i]
+	    detect_billboard(img_location)
+
+
+if(__name__=="__main__"):
+    main(0)

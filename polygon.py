@@ -28,8 +28,8 @@ def sort_clusters(clusters, img):
 						ccw_clusters[UR], ccw_clusters[-1]])
 
 	hull = cv2.convexHull(np.array([clusters], dtype='int32'))
-	plot_mask(img, ccw_clusters, 'CCW Clusters')
-	plot_mask(img, corners, 'OG Corner Clusters')
+	#plot_mask(img, ccw_clusters, 'CCW Clusters')
+	#plot_mask(img, corners, 'OG Corner Clusters')
 	masked_img = plot_mask(img, hull, 'cv2 Convex Hull')
 
 
