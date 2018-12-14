@@ -15,6 +15,8 @@ y = 1
 
 def is_billboard_present(corners):
 	# Return True if billboard feasible, return False otherwise
+	if len(corners) != 4:
+		return False
 	tolerated = angles_within_tol(corners,horz_tol=30,vert_tol=30)
 	tolerated *= edge_lens_within_tol(corners,horz_tol=[225,275],vert_tol=[75,125])
 	return tolerated
@@ -29,7 +31,7 @@ def angles_within_tol(cor, horz_tol, vert_tol):
 	return tolerated
 
 def cor_angle(c1,c2):
-	return math.degress(math.atan2(abs(c1[y]-c2[y]), abs(c1[x]-c2[x])))
+	return math.degrees(math.atan2(abs(c1[y]-c2[y]), abs(c1[x]-c2[x])))
 
 def edge_lens_within_tol(cor, horz_tol, vert_tol):
 	tolerated = True

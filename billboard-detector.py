@@ -25,6 +25,11 @@ hough_max_gap = 35
 
 DEBUG = True
 
+def no_billboard(img):
+    plt.imshow(np.zeros(img.shape, dtype="uint8"))
+    plt.title("No Billboard Detected")
+    plt.show()
+
 
 
 def detect_billboard(img_location):
@@ -42,15 +47,19 @@ def detect_billboard(img_location):
     img_cropped2 = cv2.cvtColor(img_cropped2,cv2.COLOR_BGR2RGB)
 
     if DEBUG:
-	    #show what the gray blurred image looks like
-	    plt.imshow(gray_cropped,cmap='gray')
-	    plt.title('Grayscale image')
-	    plt.show()
+        #show what the gray blurred image looks like
+        plt.imshow(gray_cropped,cmap='gray')
+        plt.title('Grayscale image')
+        plt.show()
 
-	    #show what the Canny edges look like
-	    plt.imshow(edges,cmap='gray')
-	    plt.title('Canny edges')
-	    plt.show() 
+        #show what the Canny edges look like
+        plt.imshow(edges,cmap='gray')
+        plt.title('Canny edges')
+        plt.show() 
+
+    if lines is None:
+        no_billboard(img_cropped2)
+        return
 
     #put Hough lines on the cropped image one at a time just to visualize
     for line in lines:
@@ -61,23 +70,27 @@ def detect_billboard(img_location):
     img_RGB = cv2.cvtColor(img_cropped, cv2.COLOR_BGR2RGB)
 
     if DEBUG:
-	    plt.imshow(img_RGB)
-	    plt.title("cropped image with hough lines")
-	    plt.show()
+        plt.imshow(img_RGB)
+        plt.title("cropped image with hough lines")
+        plt.show()
 
     #find intersections of Hough lines
     intersections = fi.segmented_intersections(lines)
+
+    if len(intersections) is 0:
+        no_billboard(img_RGB)
+        return
 
     #get (x,y) of the intersections so that we can plot them on top of image
     x = intersections[:,0]
     y = intersections[:,1]
 
     if DEBUG:
-	    #show the image w/lines and then put a scatter plot of the intersections on top
-	    plt.imshow(img_RGB)
-	    plt.scatter(x, y, c='r', s=40)
-	    plt.title('Hough line intersections laid on top of Hough lines')
-	    plt.show()
+        #show the image w/lines and then put a scatter plot of the intersections on top
+        plt.imshow(img_RGB)
+        plt.scatter(x, y, c='r', s=40)
+        plt.title('Hough line intersections laid on top of Hough lines')
+        plt.show()
 
     #find the clusters of the intersections - basically reduce the number of points
     labels, cluster_centers = cluster_corners(intersections)
@@ -87,17 +100,17 @@ def detect_billboard(img_location):
     y = cluster_centers[:,1]
 
     if DEBUG:
-	    #plot the cluster locations as a scatter plot on top of the lines image
-	    plt.imshow(img_RGB)
-	    plt.scatter(x, y, c='r', s=40)
-	    plt.title('Cluster Centroids laid on top of Hough lines')
-	    plt.show()
+        #plot the cluster locations as a scatter plot on top of the lines image
+        plt.imshow(img_RGB)
+        plt.scatter(x, y, c='r', s=40)
+        plt.title('Cluster Centroids laid on top of Hough lines')
+        plt.show()
 
     masked_img, corners_final = polygon2(cluster_centers,img_cropped2)
     if DEBUG:
-	    plt.imshow(masked_img)
-	    plt.title('The masked man approaches')
-	    plt.show()
+        plt.imshow(masked_img)
+        plt.title('The masked man approaches')
+        plt.show()
 
 
     '''@TODO Peter is working on a function that will order these correctly for
@@ -113,15 +126,21 @@ def detect_billboard(img_location):
     ccw_corners, masked_img = form_polygon(cluster_centers, img_cropped2)
 
     # True if billboard detected, False otherwise
-    #billboard_detected = is_billboard_present(corners)
+    billboard_detected = is_billboard_present(ccw_corners)
     
     if DEBUG:
-	    print('Chris corners')
-	    print(corners_final)
-	    print('Peter corners')
-	    print(ccw_corners)
+        print('Chris corners')
+        print(corners_final)
+        print('Peter corners')
+        print(ccw_corners)
 
-    billboard_homog_project(corners_final,masked_img)
+    
+
+    if billboard_detected:
+        billboard_homog_project(corners_final,masked_img)
+    else:
+        no_billboard(masked_img)
+
 
     #defunct testing code beyond this line
     ################################################################################
@@ -163,32 +182,32 @@ def detect_billboard(img_location):
     #print(clust_dist_sorted)
 
 def main():
-	print("Main args: ", sys.argv)
-	
-	#if mode  = 0, single image, if mode = 1 read in entire directory
-	mode = 1
+    print("Main args: ", sys.argv)
+    
+    #if mode  = 0, single image, if mode = 1 read in entire directory
+    mode = 1
 
-	#read in image
-	if(mode == 0):
-	    files = "data/frame14.jpg"
-	    num_files = 1
-	elif(mode == 1):
-	    path = 'data/Test_Images/_021_first_15/'
-	    files = os.listdir(path)
-	    files.sort()
-	    num_files = len(files)
-	    for i in range(len(files)):
-	        files[i] = path + files[i]
-	        print(files[i])
+    #read in image
+    if(mode == 0):
+        files = "data/frame14.jpg"
+        num_files = 1
+    elif(mode == 1):
+        path = 'data/Test_Images/_021_first_15/'
+        files = os.listdir(path)
+        files.sort()
+        num_files = len(files)
+        for i in range(len(files)):
+            files[i] = path + files[i]
+            print(files[i])
 
-	#loop through the selected files
-	for i in range(num_files):
-	    if(mode == 0):
-	        img_location = files
-	    elif(mode == 1):
-	        img_location = files[i]
-	    detect_billboard(img_location)
+    #loop through the selected files
+    for i in range(num_files):
+        if(mode == 0):
+            img_location = files
+        elif(mode == 1):
+            img_location = files[i]
+        detect_billboard(img_location)
 
 
 if(__name__=="__main__"):
-	main()
+    main()
