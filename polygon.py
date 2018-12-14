@@ -7,6 +7,8 @@ import eta.core.image as etai
 def form_polygon(clusters, img):
 	# Wrapper for fitting a polygon
 	# to A SINGLE BILLBOARD
+	if len(clusters) < 4:
+		return clusters, np.zeros(img.shape, dtype="uint8")
 	return sort_clusters(clusters, img)
 
 def sort_clusters(clusters, img):
@@ -35,8 +37,6 @@ def sort_clusters(clusters, img):
 	pts = np.array(hull, dtype='int32')
 	cv2.fillPoly(mask, [pts], (255,255,255))
 	masked_img = cv2.bitwise_and(img, mask)
-
-
 
 	return ccw_corners, masked_img
 

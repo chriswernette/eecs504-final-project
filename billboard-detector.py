@@ -13,6 +13,7 @@ from polygon2 import polygon2
 from preprocessing import preprocess_data
 from cluster_corners import cluster_corners
 from polygon import form_polygon, plot_mask
+from reject import is_billboard_present
 from skimage.morphology import convex_hull_image
 
 #set tunable parameters
@@ -22,7 +23,7 @@ hough_thresh = 30
 hough_min_ll = 50
 hough_max_gap = 35
 
-DEBUG = False
+DEBUG = True
 
 
 
@@ -110,12 +111,15 @@ def detect_billboard(img_location):
     so it goes from bottom left corner -> bottom right corner'''
 
     ccw_corners, masked_img = form_polygon(cluster_centers, img_cropped2)
+
+    # True if billboard detected, False otherwise
+    #billboard_detected = is_billboard_present(corners)
     
     if DEBUG:
 	    print('Chris corners')
 	    print(corners_final)
 	    print('Peter corners')
-	    print(corners)
+	    print(ccw_corners)
 
     billboard_homog_project(corners_final,masked_img)
 
@@ -162,14 +166,14 @@ def main():
 	print("Main args: ", sys.argv)
 	
 	#if mode  = 0, single image, if mode = 1 read in entire directory
-	mode = 0
+	mode = 1
 
 	#read in image
 	if(mode == 0):
 	    files = "data/frame14.jpg"
 	    num_files = 1
 	elif(mode == 1):
-	    path = '/home/chris/Documents/eecs/eecs_504/eecs504-final-project/data/Test_Images/_021_first_15/'
+	    path = 'data/Test_Images/_021_first_15/'
 	    files = os.listdir(path)
 	    files.sort()
 	    num_files = len(files)
