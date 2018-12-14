@@ -2,7 +2,9 @@ import numpy as np
 import cv2
 import matplotlib.pyplot as plt
 from skimage.morphology import convex_hull_image
-from sklearn.cluster import MeanShift 
+from sklearn.cluster import MeanShift
+
+DEBUG = False 
 
 def polygon2(intersections, img_cropped):
     #need to convert cluster locations to integer so we're at valid pixel locations
@@ -58,8 +60,9 @@ def polygon2(intersections, img_cropped):
     #print('corners going into Moe\'s function')
     #print(corners_final_final)
 
-    plt.imshow(corners,cmap='gray')
-    plt.show()
+    if DEBUG:
+        plt.imshow(corners,cmap='gray')
+        plt.show()
 
     #to get the image mask you need to convert to uint8 and mult by 255 so the
     #channels all show up

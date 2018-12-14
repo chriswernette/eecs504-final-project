@@ -3,6 +3,7 @@
 #coordinates of intersection
 
 import numpy as np
+DEBUG = False
 
 def find_intersection(line1, line2):
     '''function to find the intersections of 2 Hough lines. The results are
@@ -61,9 +62,10 @@ def find_intersection(line1, line2):
         
         #add to intersection list
         if((checkT or checkU) and ((angleDiff > 75) and (angleDiff < 105))):
-            print('This intercept is (' + str(xInt) + ',' + str(yInt) + ')')
-            print('and the angle difference is')
-            print(angleDiff)
+            if DEBUG:
+                print('This intercept is (' + str(xInt) + ',' + str(yInt) + ')')
+                print('and the angle difference is')
+                print(angleDiff)
             intersection = [xInt,yInt]
 
     return intersection 
