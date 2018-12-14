@@ -24,16 +24,21 @@ def sort_clusters(clusters, img):
 	# then combine with the left-hand billboard clusters
 	# to put points in counter-clockwise order
 	ccw_clusters = np.concatenate((clusters[:UR],clusters[UR:][::-1]),axis=0)
-	corners = np.array([ccw_clusters[0], ccw_clusters[BL],
+	ccw_corners = np.array([ccw_clusters[0], ccw_clusters[BL],
 						ccw_clusters[UR], ccw_clusters[-1]])
 
 	hull = cv2.convexHull(np.array([clusters], dtype='int32'))
 	#plot_mask(img, ccw_clusters, 'CCW Clusters')
 	#plot_mask(img, corners, 'OG Corner Clusters')
-	masked_img = plot_mask(img, hull, 'cv2 Convex Hull')
+	#masked_img = plot_mask(img, hull, 'cv2 Convex Hull')
+	mask = np.zeros(img.shape, dtype="uint8")
+	pts = np.array(hull, dtype='int32')
+	cv2.fillPoly(mask, [pts], (255,255,255))
+	masked_img = cv2.bitwise_and(img, mask)
 
 
-	return ccw_clusters, corners, masked_img
+
+	return ccw_corners, masked_img
 
 def smooth_polygon(ccw_clusters, BL):
 	# Smooths polygon

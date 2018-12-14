@@ -109,7 +109,7 @@ def detect_billboard(img_location):
     the array when we are about to go from bottom left corner -> upper right corner
     so it goes from bottom left corner -> bottom right corner'''
 
-    ccw_clusters, corners, masked_img = form_polygon(cluster_centers, img_cropped2)
+    ccw_corners, masked_img = form_polygon(cluster_centers, img_cropped2)
     
     if DEBUG:
 	    print('Chris corners')
@@ -158,7 +158,9 @@ def detect_billboard(img_location):
     #clust_dist_sorted = clust_int[idx]
     #print(clust_dist_sorted)
 
-def main(args):
+def main():
+	print("Main args: ", sys.argv)
+	
 	#if mode  = 0, single image, if mode = 1 read in entire directory
 	mode = 0
 
@@ -185,4 +187,4 @@ def main(args):
 
 
 if(__name__=="__main__"):
-    main(0)
+	main()
