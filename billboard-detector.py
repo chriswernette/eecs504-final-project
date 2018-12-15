@@ -149,7 +149,7 @@ def main():
 
 	#read in image
     if(mode == 0):
-        files = "data/frame14.jpg"
+        files = "data/Test_Images/_021_first_15/frame14.jpg"
         num_files = 1
     elif(mode == 1):
         path = 'data/Test_Images/_021_first_15/'
