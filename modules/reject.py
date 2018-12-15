@@ -23,7 +23,7 @@ def is_billboard_present(corners):
 	if len(corners) != 4:
 		return False
 	tolerated = angles_within_tol(corners,horz_tol=15,vert_tol=15)
-	tolerated *= edge_lens_within_tol(corners,sim_ratio=[0.5,1.7],h_v_ratio=[1.5,5])
+	tolerated *= edge_lens_within_tol(corners,sim_ratio=[0.5,1.75],h_v_ratio=[1.5,5])
 	return tolerated
 
 
