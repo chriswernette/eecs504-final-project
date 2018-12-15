@@ -2,19 +2,22 @@
 command line arguments in the future, for now change the img = cv.imread command
 to change the image you're running on'''
 
+#standard libs
 import cv2
 import sys
 import os
 import numpy as np
 import matplotlib.pyplot as plt
-import find_intersections as fi
-from billboard_homog_project import billboard_homog_project
-from polygon2 import polygon2
-from preprocessing import preprocess_data
-from cluster_corners import cluster_corners
-from polygon import form_polygon, plot_mask
-from reject import is_billboard_present
 from skimage.morphology import convex_hull_image
+
+#our libs
+import modules.find_intersections as fi
+from modules.billboard_homog_project import billboard_homog_project
+from modules.polygon2 import polygon2
+from modules.preprocessing import preprocess_data
+from modules.cluster_corners import cluster_corners
+from modules.polygon import form_polygon, plot_mask
+from modules.reject import is_billboard_present
 
 #set tunable parameters
 canny_min = 50

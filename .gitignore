@@ -1,5 +1,10 @@
+#hidden/tool files
 .vscode/
-failed-models/
 .pylintrc
 __pycache__/
-testing.py
+
+#directories not in use
+failed-models/
+masking/
+test-hough/
+archive/
