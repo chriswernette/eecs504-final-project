@@ -25,8 +25,8 @@ File that will set up input files, call other modules. I intend to set this up s
 ## preprocessing.py - Chris
 This function takes in an image and handles all the preprocessing. The output will be Hough lines in (x1, y1), (x2, y2) format. Submodules of this function are cropping, edge detection, and Hough lines. The preprocessing module will make calls to the sign masking module to exclude edges/Hough lines resulting from Michigan highway signs.
 
-## Sign Masking - Alex
-@TODO Alex describe however you want.
+## street_sign_mask.py - Alex
+This will take in an image as input and return an image mask of typical traffic signs like exit information, contruction signs, and road information. Traffic signs are detected based on the official color values for green, yellow, orange, and blue traffic signs. The output is used by preprocessing.py to exclude these types of rectangular objects on the road.
 
 ## find_intersections.py - Chris
 This will take in the endpoints of all the lines, and then find their intersections by parameterizing each line. Also, it will reject intersections that are not close to 90 degrees to eliminate false positives. The output of this function is a list of (x,y) coordinates that meet the criteria of being a valid intersection of two nearly perpendicular lines. See [Line-Line Intersection](https://en.wikipedia.org/wiki/Line%E2%80%93line_intersection) given two points on each line section.
