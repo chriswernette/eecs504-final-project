@@ -5,7 +5,7 @@ import numpy as np
 
 def preprocess_data(img, 
                     crop = 1, crop_x = np.array([400,520]), crop_y = np.array([1000,1300]), 
-                    canny_auto_tune = 1, canny_min = 125, canny_max = 150, 
+                    canny_auto_tune = 0, canny_min = 125, canny_max = 150, 
                     hough_thresh = 30, hough_min_ll = 100, hough_max_gap = 35):
     '''this function will perform all the preprocessing on the input image, with
     the end output being the hough lines'''

@@ -19,12 +19,26 @@ from modules.cluster_corners import cluster_corners
 from modules.polygon import form_polygon, plot_mask
 from modules.reject import is_billboard_present
 
+loose_tune = 0
+tight_tune = 1
+
+tune = 1
+
 #set tunable parameters
-canny_min = 50
-canny_max = 75
-hough_thresh = 30
-hough_min_ll = 50
-hough_max_gap = 35
+if(tune == loose_tune):
+    canny_min = 40
+    canny_max = 50
+    hough_thresh = 10
+    hough_min_ll = 5
+    hough_max_gap = 15
+
+if(tune == tight_tune):
+    canny_min = 60
+    canny_max = 90
+    hough_thresh = 30
+    hough_min_ll = 25
+    hough_max_gap = 15
+
 
 DEBUG = True
 
