@@ -14,6 +14,7 @@ def preprocess_data(cropped_img, canny_min = 125, canny_max = 150,
     gray = cv2.cvtColor(blur, cv2.COLOR_BGR2GRAY)
     y, x = gray.shape
 
+    
     #crop the image to the upper right quadrant, add inputs
     #gray_cropped = gray[0:np.floor(y/2).astype(int),np.floor(x/2).astype(int):]
     #img_cropped = img[0:np.floor(y/2).astype(int),np.floor(x/2).astype(int):]
@@ -21,7 +22,14 @@ def preprocess_data(cropped_img, canny_min = 125, canny_max = 150,
     img_cropped = img[400:520,1000:1300]
     '''get edges from Canny, try separating by color channel and getting edges 
     on those, or maybe try a different edge detector like Harris corners?'''
-    edges = cv2.Canny(gray_cropped, canny_min, canny_max)
+    
+    
+    sigma = .33
+    v = np.median(gray_cropped)
+    lower = int(max(0, (1.0 - sigma) * v))
+    upper = int(min(255, (1.0 + sigma) * v))
+    edges = cv2.Canny(gray_cropped, lower, upper)
+    #edges = cv2.Canny(gray_cropped, canny_min, canny_max)
 
     #get Hough lines from edges image
     '''don't touch first 3 arguments, fourth arg is threshold, the number of votes

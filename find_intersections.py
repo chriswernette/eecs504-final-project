@@ -34,21 +34,23 @@ def find_intersection(line1, line2):
     x3,y3,x4,y4 = line2
 
     #compute angles and difference, which we will use later
-    theta1 = np.arctan2(x2-x1,y2-y1) * 180/np.pi
-    theta2 = np.arctan2(x4-x3,y4-y3) * 180/np.pi
+    #theta1 = np.arctan2(x2-x1,y2-y1) * 180/np.pi
+    #theta2 = np.arctan2(x4-x3,y4-y3) * 180/np.pi
+    theta1 = np.arctan2(y2-y1,x2-x1) * 180/np.pi
+    theta2 = np.arctan2(y4-y3,x4-x3) * 180/np.pi
     angleDiff = abs(theta1-theta2)
 
     #pre-compute denominator so we don't accidentally divide by 0
     denominator = ((x1-x2)*(y3-y4) - (y1-y2)*(x3-x4))
 
-    if(abs(denominator) > .01):
+    if(abs(denominator) > .001):
         #formula from wikipedia for finding parameterization of line
         t = ((x1-x3)*(y3-y4) - (y1-y3)*(x3-x4))/denominator
         u = -((x1-x2)*(y1-y3) -(y1-y2)*(x1-x3))/denominator
 
-        #give a little wiggle room for rounding error
-        checkT = (0<=t) and (t<=1)
-        checkU = (0<=u) and (u<=1)
+        #can give a little wiggle room for rounding error if needed
+        checkT = (0.0<=t) and (t<=1.0)
+        checkU = (0.0<=u) and (u<=1.0)
         #print('The value of t is ' + str(t))
         #print('The value of u is ' + str(u))
 

@@ -93,23 +93,14 @@ def detect_billboard(img_location):
 	    plt.title('Cluster Centroids laid on top of Hough lines')
 	    plt.show()
 
-    masked_img, corners_final = polygon2(cluster_centers,img_cropped2)
+    #Chris' billboard mask function, uses convex hull, harris corners
+    masked_img_chris, corners_final = polygon2(intersections,img_cropped2)
     if DEBUG:
-	    plt.imshow(masked_img)
+	    plt.imshow(masked_img_chris)
 	    plt.title('The masked man approaches')
 	    plt.show()
 
-
-    '''@TODO Peter is working on a function that will order these correctly for
-    drawing a polygon. Basically the issue is the cluster points go down the left
-    hand side of the billboard and then cut across to the upper right instead of the 
-    lower right hand corner because the distance to the point (0,0) is less. But,
-    for the polynomial mask function to work they need to be in the order that you
-    would draw a box around the mask. So, Peter is working on a function that will
-    get that correct order by finding the distance between each point, and reversing
-    the array when we are about to go from bottom left corner -> upper right corner
-    so it goes from bottom left corner -> bottom right corner'''
-
+    #Peter's billboard mask function
     ccw_corners, masked_img = form_polygon(cluster_centers, img_cropped2)
 
     # True if billboard detected, False otherwise
@@ -121,52 +112,13 @@ def detect_billboard(img_location):
 	    print('Peter corners')
 	    print(ccw_corners)
 
-    billboard_homog_project(corners_final,masked_img)
-
-    #defunct testing code beyond this line
-    ################################################################################
-    #testing Harris Corners, goodFeaturesToTrack is what we implemented in hw3
-    # corners = cv2.goodFeaturesToTrack(gray_cropped,100,.1,10)
-    # corners = np.int0(corners)
-    # corners = corners.reshape((corners.shape[0],2))
-    # x = corners[:,0]
-    # y = corners[:,1]
-
-
-    # plt.imshow(img_RGB)
-    # plt.scatter(x,y,c='r',s=40)
-    # plt.title('Corners from cv2.goodFeaturesToTrack laid on top of hough lines')
-    # plt.show()
-
-    ################################################################################
-    #this was trying out some findContours/convexHull code that didn't work
-    #set up binary image of just points for the contour detection algorithm/convex Hull
-    #print(clust_int)
-
-    # test_img = np.zeros_like(gray_cropped)
-    # for i in range(clust_int.shape[0]):
-    #     x,y = clust_int[i]
-    #     test_img[y,x] = 1
-
-    # plt.imshow(test_img)
-    # plt.show()
-
-    ################################################################################
-    '''compute the distance from the upper left hand corner of the image (0,0) and
-    use that to sort. The upper left hand corner should have the least distance and
-    the lower right should have the largest.'''
-    #dist = np.linalg.norm(clust_int,axis=1).reshape(clust_int.shape[0],1)
-    #print(dist)
-    #idx = np.argsort(dist,axis=0)
-    #print(idx)
-    #clust_dist_sorted = clust_int[idx]
-    #print(clust_dist_sorted)
+    billboard_homog_project(corners_final,masked_img_chris)
 
 def main():
 	print("Main args: ", sys.argv)
 	
 	#if mode  = 0, single image, if mode = 1 read in entire directory
-	mode = 1
+	mode = 0
 
 	#read in image
 	if(mode == 0):
