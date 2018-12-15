@@ -18,7 +18,7 @@ def is_billboard_present(corners):
 	if len(corners) != 4:
 		return False
 	tolerated = angles_within_tol(corners,horz_tol=30,vert_tol=30)
-	tolerated *= edge_lens_within_tol(corners,horz_tol=[225,275],vert_tol=[75,125])
+	tolerated *= edge_lens_within_tol(corners,sim_ratio=[0.8,1.2],h_v_ratio=[2,3])
 	return tolerated
 
 
@@ -33,7 +33,7 @@ def angles_within_tol(cor, horz_tol, vert_tol):
 def cor_angle(c1,c2):
 	return math.degrees(math.atan2(abs(c1[y]-c2[y]), abs(c1[x]-c2[x])))
 
-def edge_lens_within_tol(cor, horz_tol, vert_tol):
+def edge_lens_within_tol(cor, sim_ratio, h_v_ratio):
 	tolerated = True
 
 	left   = np.linalg.norm(cor[UL] - cor[BL])
@@ -41,10 +41,10 @@ def edge_lens_within_tol(cor, horz_tol, vert_tol):
 	upper  = np.linalg.norm(cor[UL] - cor[UR])
 	bottom = np.linalg.norm(cor[BL] - cor[BR])
 	
-	tolerated *= (vert_tol[0] <= left)   *   (left <= vert_tol[1])
-	tolerated *= (vert_tol[0] <= right)  *  (right <= vert_tol[1])
+	tolerated *= (sim_ratio[0] <= left/right)   *   (left/right <= sim_ratio[1])
+	tolerated *= (sim_ratio[0] <= upper/bottom) * (upper/bottom <= sim_ratio[1])
 	
-	tolerated *= (horz_tol[0] <= upper)  *  (upper <= horz_tol[1])
-	tolerated *= (horz_tol[0] <= bottom) * (bottom <= horz_tol[1])
+	tolerated *= (h_v_ratio[0] <= upper/left)   *   (upper/left <= h_v_ratio[1])
+	tolerated *= (h_v_ratio[0] <= bottom/right) * (bottom/right <= h_v_ratio[1])
 
 	return tolerated
