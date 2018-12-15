@@ -13,7 +13,7 @@ def onselect(eclick, erelease):
     ax.set_xlim(eclick.xdata,erelease.xdata)
     fig.canvas.draw()
 
-path = '../data/_027_12_04_20_to_12_04_30/'
+path = '../data/_027_12_04_51_to_12_04_57/'
 files = os.listdir(path)
 files.sort()
 num_files = len(files)
