@@ -3,8 +3,10 @@
 import cv2
 import numpy as np
 
-def preprocess_data(img, crop_x = np.array([400,520]), crop_y = np.array([1000,1300]), canny_min = 125,  
-                    canny_max = 150, hough_thresh = 30, hough_min_ll = 100, hough_max_gap = 35):
+def preprocess_data(img, 
+                    crop = 1, crop_x = np.array([400,520]), crop_y = np.array([1000,1300]), 
+                    canny_auto_tune = 1, canny_min = 125, canny_max = 150, 
+                    hough_thresh = 30, hough_min_ll = 100, hough_max_gap = 35):
     '''this function will perform all the preprocessing on the input image, with
     the end output being the hough lines'''
 
@@ -14,22 +16,22 @@ def preprocess_data(img, crop_x = np.array([400,520]), crop_y = np.array([1000,1
     gray = cv2.cvtColor(blur, cv2.COLOR_BGR2GRAY)
     y, x = gray.shape
 
+    #crop image if requested
+    if(crop):
+        gray_cropped = gray[crop_x[0]:crop_x[1],crop_y[0]:crop_y[1]]
+        img_cropped = img[crop_x[0]:crop_x[1],crop_y[0]:crop_y[1]]
+    else:
+        gray_cropped = gray
+        img_cropped = img
     
-    #crop the image to the upper right quadrant, add inputs
-    #gray_cropped = gray[0:np.floor(y/2).astype(int),np.floor(x/2).astype(int):]
-    #img_cropped = img[0:np.floor(y/2).astype(int),np.floor(x/2).astype(int):]
-    gray_cropped = gray[crop_x[0]:crop_x[1],crop_y[0]:crop_y[1]]
-    img_cropped = img[crop_x[0]:crop_x[1],crop_y[0]:crop_y[1]]
-    '''get edges from Canny, try separating by color channel and getting edges 
-    on those, or maybe try a different edge detector like Harris corners?'''
+    #trying adaptive tuning, can turn on or off
+    if(canny_auto_tune):
+        sigma = .33
+        v = np.median(gray_cropped)
+        canny_min = int(max(0, (1.0 - sigma) * v))
+        canny_max = int(min(255, (1.0 + sigma) * v))
     
-    
-    sigma = .33
-    v = np.median(gray_cropped)
-    lower = int(max(0, (1.0 - sigma) * v))
-    upper = int(min(255, (1.0 + sigma) * v))
-    edges = cv2.Canny(gray_cropped, lower, upper)
-    #edges = cv2.Canny(gray_cropped, canny_min, canny_max)
+    edges = cv2.Canny(gray_cropped, canny_min, canny_max)
 
     #get Hough lines from edges image
     '''don't touch first 3 arguments, fourth arg is threshold, the number of votes

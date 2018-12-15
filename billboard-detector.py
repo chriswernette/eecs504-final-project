@@ -35,7 +35,7 @@ def no_billboard(img):
 
 
 
-def detect_billboard(img_location):
+def detect_billboard(img_location, crop):
     '''calls preprocess script to crop the image to the upper right hand quadrant,
     grayscale and blur the crop, find Canny edges and Hough lines from the cropped 
     grayscale. In the future, I'll add inputs so you can specify where the function
@@ -44,9 +44,10 @@ def detect_billboard(img_location):
     img = cv2.cvtColor(img,cv2.COLOR_BGR2RGB)
     plt.imshow(img)
     plt.show()
-    gray_cropped, img_cropped, edges, lines = preprocess_data(img_location,canny_min = canny_min,
-                                                canny_max = canny_max,hough_thresh = hough_thresh, 
-                                                hough_min_ll = hough_min_ll, hough_max_gap = hough_max_gap)
+    gray_cropped, img_cropped, edges, lines = preprocess_data(img_location, 
+                                                crop=1, crop_x=crop[2:], crop_y=crop[0:2],
+                                                canny_min=canny_min, canny_max=canny_max,
+                                                hough_thresh=hough_thresh, hough_min_ll=hough_min_ll, hough_max_gap=hough_max_gap)
     img_cropped2 = np.copy(img_cropped)
     img_cropped2 = cv2.cvtColor(img_cropped2,cv2.COLOR_BGR2RGB)
 
@@ -81,7 +82,8 @@ def detect_billboard(img_location):
     #find intersections of Hough lines
     intersections = fi.segmented_intersections(lines)
 
-    if len(intersections) is 0:
+    #changed to < 4, need at least 4 intersections to draw a rectangular chull
+    if (len(intersections) <4):
         no_billboard(img_RGB)
         return
 
@@ -145,28 +147,46 @@ def main():
     print("Main args: ", sys.argv)
 
     #if mode  = 0, single image, if mode = 1 read in entire directory
-    mode = 0
+    mode = 1
 
 	#read in image
     if(mode == 0):
         files = "data/Test_Images/_021_first_15/frame14.jpg"
+        img = cv2.imread(files)
+        height = img.shape[0]
+        width = img.shape[1]
+        crop = np.array([0,width,0,height])
         num_files = 1
     elif(mode == 1):
+        #be SURE to put a / at the end so it recognizes as a directory lol
         path = 'data/Test_Images/_021_first_15/'
         files = os.listdir(path)
         files.sort()
-        num_files = len(files)
+        images = []
         for i in range(len(files)):
-            files[i] = path + files[i]
-            print(files[i])
+            root, ext = os.path.splitext(files[i])
+            if(ext == '.jpg'):
+                to_append = path + files[i]
+                images.append(to_append)
+                
+        if(DEBUG):
+            for i in range(len(images)):
+                print(images[i])
+        num_files = len(files)
+
+    crop_name = path + 'crops.npy'
+    coords = np.load(crop_name)
 
     #loop through the selected files
     for i in range(num_files):
         if(mode == 0):
             img_location = files
         elif(mode == 1):
-            img_location = files[i]
-        detect_billboard(img_location)
+            img_location = images[i]
+            crop = coords[i,:]
+        if(DEBUG):
+            print(img_location)
+        detect_billboard(img_location, crop)
 
 
 if(__name__=="__main__"):
