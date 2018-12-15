@@ -22,8 +22,6 @@ def polygon2(intersections, img_cropped):
     
     test = chull[:,:].astype(np.uint8)*255
     corners = cv2.cornerHarris(test,3,3,0.09)
-    plt.imshow(corners,cmap='gray')
-    plt.show()
 
     #find only 4 corners for Moe's braindead homography
     corners_greater_zero = np.argwhere(corners>0)
