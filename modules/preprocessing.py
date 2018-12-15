@@ -3,13 +3,13 @@
 import cv2
 import numpy as np
 
-def preprocess_data(cropped_img, canny_min = 125, canny_max = 150, 
+def preprocess_data(img, crop_x = np.array([400,520]), crop_y = np.array([1000,1300]), canny_min = 125,  = 150, 
                     hough_thresh = 30, hough_min_ll = 100, hough_max_gap = 35):
     '''this function will perform all the preprocessing on the input image, with
     the end output being the hough lines'''
 
     #read in image, blur, and grayscale
-    img = cv2.imread(cropped_img)
+    img = cv2.imread(img)
     blur = cv2.GaussianBlur(img, (5, 5), 0)
     gray = cv2.cvtColor(blur, cv2.COLOR_BGR2GRAY)
     y, x = gray.shape
@@ -18,8 +18,8 @@ def preprocess_data(cropped_img, canny_min = 125, canny_max = 150,
     #crop the image to the upper right quadrant, add inputs
     #gray_cropped = gray[0:np.floor(y/2).astype(int),np.floor(x/2).astype(int):]
     #img_cropped = img[0:np.floor(y/2).astype(int),np.floor(x/2).astype(int):]
-    gray_cropped = gray[400:520,1000:1300]
-    img_cropped = img[400:520,1000:1300]
+    gray_cropped = gray[crop_x[0]:crop_x[1],crop_y[0]:crop_y[1]]
+    img_cropped = img[crop_x[0]:crop_x[1],crop_y[0]:crop_y[1]]
     '''get edges from Canny, try separating by color channel and getting edges 
     on those, or maybe try a different edge detector like Harris corners?'''
     

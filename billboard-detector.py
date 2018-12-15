@@ -44,8 +44,9 @@ def detect_billboard(img_location):
     img = cv2.cvtColor(img,cv2.COLOR_BGR2RGB)
     plt.imshow(img)
     plt.show()
-    gray_cropped, img_cropped, edges, lines = preprocess_data(img_location,canny_min,
-                                                canny_max,hough_thresh,hough_min_ll,hough_max_gap)
+    gray_cropped, img_cropped, edges, lines = preprocess_data(img_location,canny_min = canny_min,
+                                                canny_max = canny_max,hough_thresh = hough_thresh, 
+                                                hough_min_ll = hough_min_ll, hough_max_gap = hough_max_gap)
     img_cropped2 = np.copy(img_cropped)
     img_cropped2 = cv2.cvtColor(img_cropped2,cv2.COLOR_BGR2RGB)
 
