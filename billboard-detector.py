@@ -131,9 +131,14 @@ def detect_billboard(img_location):
         print(ccw_corners)
 
     if billboard_detected:
-        billboard_homog_project(corners_final,masked_img_chris)
+        driverside_eye_vec = np.array([1300,1552])
+        passenger_eye_vec = np.array([1850,1252])
+        center_eye_vec = np.array([2000,730])
+        billboard_homog_project(corners_final,masked_img_chris,2,driverside_eye_vec,passenger_eye_vec,center_eye_vec)
     else:
         no_billboard(masked_img)
+
+    
 
 def main():
     print("Main args: ", sys.argv)
