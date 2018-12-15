@@ -22,12 +22,15 @@ from modules.reject import is_billboard_present
 #set tunable parameters
 canny_min = 75
 canny_max = 125
-hough_thresh = 30
-hough_min_ll = 25
+hough_thresh = 10
+hough_min_ll = 15
 hough_max_gap = 35
 
 # crop windows [y_low, y_high, x_low, x_high]
-crop_windows = [[50,475,1350,1750],[350,550,1000,1300],[425,550,740,925]]
+#crop_windows = [[200,475,1350,1750],[50,275,1350,1750],[350,525,1000,1300],[425,550,740,925]]
+crop_windows = [[225,525,1000,1300],[425,550,740,925]]
+#crop_windows = [[425,550,740,925]]
+#crop_windows = [[200,525,1000,1300]]
 
 
 
@@ -126,6 +129,12 @@ def detect_billboard(img_location, crop_dims):
     #Peter's billboard mask function
     ccw_corners, masked_img = form_polygon(cluster_centers, img_cropped2)
 
+    if DEBUG:
+        print('Chris corners')
+        print(corners_final)
+        print('Peter corners')
+        print(ccw_corners)
+
     # True if billboard detected, False otherwise
     billboard_detected = is_billboard_present(corners_final)
 
@@ -139,7 +148,7 @@ def main():
 
 	#read in image
     if(mode == 0):
-        files = "data/Test_Images/_021_first_15/frame14.jpg"
+        files = "data/Test_Images/_021_first_15/frame27.jpg"
         num_files = 1
     elif(mode == 1):
         path = 'data/Test_Images/_021_first_15/'
@@ -166,7 +175,9 @@ def main():
         		plt.title(img_location)
         		plt.show()
         		print("Detected with crop window: ", crop)
-        		billboard_homog_project(corners,mask)
+        		plt.imshow(mask)
+        		plt.title("mask, img: " + img_location)
+        		plt.show()
         		break
         	else:
         		print("Rejected")
