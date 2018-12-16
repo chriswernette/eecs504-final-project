@@ -35,7 +35,10 @@ This will take in the endpoints of all the lines, and then find their intersecti
 This function will take in the list of intersections, and bin nearby intersections to a centroid. The output of this is a reduced number of possible intersections for the corners of the billboard. Uses the Mean Shift clustering method from scikit-learn, you can find a demo here [A demo of the mean-shift clustering algorithm](https://scikit-learn.org/stable/auto_examples/cluster/plot_mean_shift.html) and a summary of clustering algorithms available from scikit-learn can be found here [2.3 Clustering](https://scikit-learn.org/stable/modules/clustering.html#mean-shift)
 
 ## Billboard Corner Hypothesis - Peter
-@TODO Peter describe however you want.
+This function takes, as input, the set of Hough lines intsection centroids. A convex hull is fit to these clusters, which is combined with the input image to yield the billboard mask. The clusters are then sorted in way to approximate the four corners of a bounding box for the hypothetical billboard. The billboard mask and bounding box corners are outputs of the function.
+
+## Billboard Rejection - Peter
+This function takes, as input, the set of corner outputs from the Billboard Corner Hypothesis function. The rejection function then calculates the angles and side lengths of the hypothetical bounding box. If the angles or sides are outside of the specified tolerance, the function rejects the billboard hypothesis.
 
 ## Billboard extraction and projection onto Vehicle Windshield - Moe
 This function takes the 4 corner hypothesis and projects the billboard onto the Heads Up Display(HUD). The projection is a function of where the passengers eyes are fixed onto the windshield. 
