@@ -79,7 +79,7 @@ def detect_billboard(img_location, crop):
 
     if lines is None:
         no_billboard(img_cropped2)
-        return masked_image, projected
+        return masked_image, projected, 0
 
     #put Hough lines on the cropped image one at a time just to visualize
     for line in lines:
@@ -100,7 +100,7 @@ def detect_billboard(img_location, crop):
     #changed to < 4, need at least 4 intersections to draw a rectangular chull
     if (len(intersections) <4):
         no_billboard(img_RGB)
-        return masked_image, projected
+        return masked_image, projected, 0
 
     #get (x,y) of the intersections so that we can plot them on top of image
     x = intersections[:,0]
@@ -156,7 +156,8 @@ def detect_billboard(img_location, crop):
     else:
         no_billboard(masked_img)
 
-    return masked_image, projected
+    masked_image = masked_img_chris
+    return masked_image, projected, 1
     
 
 def main():
@@ -188,7 +189,7 @@ def main():
         if(DEBUG):
             for i in range(len(images)):
                 print(images[i])
-        num_files = len(files)
+        num_files = len(images)
 
     crop_name = path + 'crops.npy'
     coords = np.load(crop_name)
@@ -202,12 +203,13 @@ def main():
         elif(mode == 1):
             img_location = images[i]
             crop = coords[i,:]
+        
         if(DEBUG):
             print(img_location)
-        masked_image, projected = detect_billboard(img_location, crop)
+        masked_image, projected, detected = detect_billboard(img_location, crop)
 
         #check if billboard was detected, if so save image to file so we can create video
-        if(np.count_nonzero(masked_image) > 0):
+        if(detected):
             mask_name = 'output/masked' + str(i).zfill(2) + '.jpg'
             projected_name = 'output/projected' + str(i).zfill(2) + '.jpg'
             cv2.imwrite(mask_name,masked_image)
