@@ -1,7 +1,3 @@
-'''script to read in image, determine edges and find hough lines, need to make
-command line arguments in the future, for now change the img = cv.imread command
-to change the image you're running on'''
-
 #standard libs
 import cv2
 import sys
@@ -29,6 +25,8 @@ hough_min_ll = 15
 hough_max_gap = 35
 
 # crop windows [y_low, y_high, x_low, x_high]
+# These windows are regions in which we expect to find billboards
+# when viewed from the vantage point of the dashcam
 crop_windows = [[570,690,1130,1430],[225,525,1000,1300],[425,550,740,925]]
 
 DEBUG = False
@@ -40,8 +38,6 @@ def detect_billboard(img_location, crop_dims):
 	looks for billboards in the image. Right now it just looks in the upper right'''
 	img = cv2.imread(img_location)
 	img = cv2.cvtColor(img,cv2.COLOR_BGR2RGB)
-	#plt.imshow(img)
-	#plt.show()
 	gray_cropped, img_cropped, edges, lines = preprocess_data(img_location,crop_dims,canny_min,
 												canny_max,hough_thresh,hough_min_ll,hough_max_gap)
 	img_cropped2 = np.copy(img_cropped)
@@ -59,7 +55,6 @@ def detect_billboard(img_location, crop_dims):
 		plt.show() 
 
 	if lines is None:
-		#no_billboard(img_cropped2)
 		return False, [], []
 
 	#put Hough lines on the cropped image one at a time just to visualize
@@ -71,6 +66,7 @@ def detect_billboard(img_location, crop_dims):
 	img_RGB = cv2.cvtColor(img_cropped, cv2.COLOR_BGR2RGB)
 
 	if DEBUG:
+		# Show the hough lines overlayed on the image
 		plt.imshow(img_RGB)
 		plt.title("cropped image with hough lines")
 		plt.show()
@@ -79,7 +75,7 @@ def detect_billboard(img_location, crop_dims):
 	intersections = fi.segmented_intersections(lines)
 
 	if len(intersections) is 0:
-		#no_billboard(img_RGB)
+		# There is no billboard if no hough intersections are found
 		return False, [], []
 
 	#get (x,y) of the intersections so that we can plot them on top of image
@@ -100,35 +96,22 @@ def detect_billboard(img_location, crop_dims):
 	x = cluster_centers[:,0]
 	y = cluster_centers[:,1]
 
-	#my algo no longer uses the cluster intersections, finds better results w/o - Chris
-	if 0:
-		#plot the cluster locations as a scatter plot on top of the lines image
-		plt.imshow(img_RGB)
-		plt.scatter(x, y, c='r', s=40)
-		plt.title('Cluster Centroids laid on top of Hough lines')
-		plt.show()
-
 	#Chris' billboard mask function, uses convex hull, harris corners
-	masked_img_chris, corners_final = polygon2(intersections,img_cropped2)
+	masked_img, corners = polygon2(intersections,img_cropped2)
 
 	if DEBUG:
-		plt.imshow(masked_img_chris)
+		plt.imshow(masked_img)
 		plt.title('Masked Image, pre-overlay')
 		plt.show()
 
-	#Peter's billboard mask function
-	ccw_corners, masked_img = form_polygon(cluster_centers, img_cropped2)
-
 	if DEBUG:
-		print('Chris corners')
+		print('Corners corners')
 		print(corners_final)
-		print('Peter corners')
-		print(ccw_corners)
 
 	# True if billboard detected, False otherwise
-	billboard_detected = is_billboard_present(corners_final)
+	billboard_detected = is_billboard_present(corners)
 
-	return billboard_detected, corners_final, masked_img_chris
+	return billboard_detected, corners, masked_img
 
 def main():
 	print("Main args: ", sys.argv)
@@ -138,10 +121,12 @@ def main():
 
 	#read in image
 	if(mode == 0):
+		# Choose which image to run the algorithm on
 		files = "data/Test_Images/_021_first_15/frame10.jpg"
 		#files = 'data/image_set_4/_image_set_4/frame14.jpg'
 		num_files = 1
 	elif(mode == 1):
+		# Choose which dataset to run the algorithm on
 		path = 'data/Test_Images/_021_first_15/'
 		#path = 'data/image_set_4/_image_set_4/'
 		files = os.listdir(path)
@@ -150,6 +135,7 @@ def main():
 		for i in range(len(files)):
 			files[i] = path + files[i]
 
+	# Prepare the output directory
 	shutil.rmtree('output')
 	os.mkdir('output')
 
@@ -164,11 +150,15 @@ def main():
 		if img_location == path + "crops.npy":
 			continue
 		
+		# Display the current image
 		print(img_location)
 		
+		# adLock logic
 		if adLock_cnt is 0:
 			carimg = etai.read('data/center.jpg')
 			carimg = cv2.cvtColor(carimg,cv2.COLOR_BGR2RGB)
+
+		# Detect billboards in all listed windows
 		for crop in crop_windows:
 			detected, corners, mask = detect_billboard(img_location, crop_dims=crop)
 			if detected:
@@ -187,6 +177,7 @@ def main():
 				adLock_cnt = 4
 				break
 
+		# Write to output
 		if mode is 1:
 			frame_no = img_location[len(path):-4]
 			carimg_path = 'output/' + frame_no + '.jpg'
