@@ -208,12 +208,11 @@ def main():
             print(img_location)
         masked_image, projected, detected = detect_billboard(img_location, crop)
 
-        #check if billboard was detected, if so save image to file so we can create video
-        if(detected):
-            mask_name = 'output/masked' + str(i).zfill(2) + '.jpg'
-            projected_name = 'output/projected' + str(i).zfill(2) + '.jpg'
-            cv2.imwrite(mask_name,masked_image)
-            cv2.imwrite(projected_name,projected)
+        #write blank image if not detected, otherwise write the projected image
+        mask_name = 'output/masked' + str(i).zfill(2) + '.jpg'
+        projected_name = 'output/projected' + str(i).zfill(2) + '.jpg'
+        cv2.imwrite(mask_name,masked_image)
+        cv2.imwrite(projected_name,projected)
 
 
 if(__name__=="__main__"):
