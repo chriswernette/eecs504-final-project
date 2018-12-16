@@ -55,7 +55,8 @@ def detect_billboard(img_location, crop):
     looks for billboards in the image. Right now it just looks in the upper right'''
     img = cv2.imread(img_location)
     masked_image = np.zeros_like(img)
-    projected = masked_image[:]
+    projected = cv2.imread('data/center.jpg')
+    projected = cv2.cvtColor(projected,cv2.COLOR_BGR2RGB)
     img = cv2.cvtColor(img,cv2.COLOR_BGR2RGB)
     plt.imshow(img)
     plt.show()
@@ -209,9 +210,11 @@ def main():
         masked_image, projected, detected = detect_billboard(img_location, crop)
 
         #write blank image if not detected, otherwise write the projected image
+        masked_image = cv2.cvtColor(masked_image,cv2.COLOR_RGB2BGR)
+        projected = cv2.cvtColor(projected,cv2.COLOR_RGB2BGR)
         mask_name = 'output/masked' + str(i).zfill(2) + '.jpg'
         projected_name = 'output/projected' + str(i).zfill(2) + '.jpg'
-        cv2.imwrite(mask_name,masked_image)
+        #cv2.imwrite(mask_name,masked_image)
         cv2.imwrite(projected_name,projected)
 
 
