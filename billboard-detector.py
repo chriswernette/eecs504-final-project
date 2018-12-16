@@ -158,7 +158,7 @@ def detect_billboard(img_location, crop):
         no_billboard(masked_img)
 
     masked_image = masked_img_chris
-    return masked_image, projected, 1
+    return masked_image, projected, billboard_detected
     
 
 def main():
