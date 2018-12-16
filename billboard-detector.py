@@ -41,7 +41,7 @@ if(tune == tight_tune):
     hough_max_gap = 15
 
 
-DEBUG = True
+DEBUG = False
 
 def no_billboard(img):
     plt.imshow(np.zeros(img.shape, dtype="uint8"))

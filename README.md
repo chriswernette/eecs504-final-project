@@ -7,12 +7,21 @@ Billboards on the side of highways are a common type of ad in the United States.
 # Screenshots/Demo Video
 Four sample gifs of raw input data and the resulting frame-by-frame windshield projections are found in the `gif_demos/` folder.
 
-# Code Example
+# Code Example 1
 To run the billboard-detector_mult_crop_window algorithm, use the following command: 
 `python3 billboard-detector_mult_crop_window.py`
 There are a few variables in the `main()` function that can be changed. To run the algorithm over an entire dataset, set `mode = 1` (line 120) and set `path` (line 130) to the folder corresponding to the dataset of choice. In mode 1, the windshield projection images will be saved in the `output/` directory, with file names corresponding to the input image frame used to make the projection. If the `output/` directory does not already exist, please initialize it.
 To run the algorithm on a single image, set `mode = 0` and set `files` (line 125) to the image of choice.
 For more verbose output and to see the intermediate steps of Canny edge detection, Hough transform, Hough intersections, and billboard masking, set `DEBUG = True` on line 32.
+As the algorithm is run frame by frame projections or no billboard found is displayed, and then the output directory incorporates use of adlock to project to frames that are "locked".
+
+# Code Example 2
+To run the billboard-detector cropped images algorithm, use the following command:
+`python3 billboard-detector.py`
+The mode variable in the `main()` function can be changed to run the whole dataset or just one image. See directions above. You can also change the tune from loose to tight at the top of the file. We prefer tight, which needs to be closer to find the billboard but has more accurate results. 
+There is also the option to run the algorithm in DEBUG mode, which shows each of the steps of our algorithm, frame by frame.
+The output of the algorithm frame by frame will be saved in the /output folder which is automatically created and deleted each time the script is run. 
+As the algorithm is run frame by frame projections or no billboard found is displayed, and then the output directory incorporates use of adlock to project to frames that are "locked".
 
 # Installation
 `git clone https://github.com/chriswernette/eecs504-final-project.git`
@@ -43,6 +52,3 @@ This function takes, as input, the set of corner outputs from the Billboard Corn
 
 ## Billboard extraction and projection onto Vehicle Windshield
 This function takes the 4 corner hypothesis and projects the billboard onto the Heads Up Display(HUD). The projection is a function of where the passengers eyes are fixed onto the windshield. 
-
-## Stitch Homography Images into Video
-@TODO I think if we put the adds projected onto the windshield all in one array this should be super easy there's gotta be code to do this.
