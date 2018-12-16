@@ -9,6 +9,8 @@ import os
 import numpy as np
 import matplotlib.pyplot as plt
 from skimage.morphology import convex_hull_image
+import eta.core.image as etai
+import shutil
 
 #our libs
 import modules.find_intersections as fi
@@ -133,8 +135,6 @@ def main():
 
 	#if mode  = 0, single image, if mode = 1 read in entire directory
 	mode = 1
-	if mode is 0:
-		DEBUG = True
 
 	#read in image
 	if(mode == 0):
@@ -150,16 +150,25 @@ def main():
 		for i in range(len(files)):
 			files[i] = path + files[i]
 
+	shutil.rmtree('output')
+	os.mkdir('output')
+
 	#loop through the selected files
+	adLock_cnt = 0
 	for i in range(num_files):
 		if(mode == 0):
 			img_location = files
 		elif(mode == 1):
 			img_location = files[i]
-		if img_location == "data/Test_Images/_021_first_15/crops.npy":
+		
+		if img_location == path + "crops.npy":
 			continue
+		
 		print(img_location)
 		
+		if adLock_cnt is 0:
+			carimg = etai.read('data/center.jpg')
+			carimg = cv2.cvtColor(carimg,cv2.COLOR_BGR2RGB)
 		for crop in crop_windows:
 			detected, corners, mask = detect_billboard(img_location, crop_dims=crop)
 			if detected:
@@ -172,8 +181,21 @@ def main():
 				driverside_eye_vec = np.array([1300,1552])
 				passenger_eye_vec = np.array([1850,1252])
 				center_eye_vec = np.array([2000,730])
-				billboard_homog_project(corners,mask,2,driverside_eye_vec,passenger_eye_vec,center_eye_vec)
+				carimg = billboard_homog_project(corners,mask,2,driverside_eye_vec,passenger_eye_vec,center_eye_vec)
+				carimg = cv2.cvtColor(carimg,cv2.COLOR_BGR2RGB)
+
+				adLock_cnt = 4
 				break
+
+		if mode is 1:
+			frame_no = img_location[len(path):-4]
+			carimg_path = 'output/' + frame_no + '.jpg'
+			cv2.imwrite(carimg_path, carimg)
+
+		if adLock_cnt > 0:
+			adLock_cnt -= 1
+
+
 
 
 if(__name__=="__main__"):
