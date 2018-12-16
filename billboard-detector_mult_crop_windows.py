@@ -27,22 +27,9 @@ hough_min_ll = 15
 hough_max_gap = 35
 
 # crop windows [y_low, y_high, x_low, x_high]
-#crop_windows = [[200,475,1350,1750],[50,275,1350,1750],[350,525,1000,1300],[425,550,740,925]]
 crop_windows = [[570,690,1130,1430],[225,525,1000,1300],[425,550,740,925]]
-#crop_windows = [[425,550,740,925]]
-#crop_windows = [[200,525,1000,1300]]
-#crop_windows = [[570,690,1125,1425]]
-
-
 
 DEBUG = False
-
-def no_billboard(img):
-	plt.imshow(np.zeros(img.shape, dtype="uint8"))
-	plt.title("No Billboard Detected")
-	plt.show()
-
-
 
 def detect_billboard(img_location, crop_dims):
 	'''calls preprocess script to crop the image to the upper right hand quadrant,
@@ -151,18 +138,17 @@ def main():
 
 	#read in image
 	if(mode == 0):
-		files = "data/Test_Images/_021_first_15/frame27.jpg"
+		files = "data/Test_Images/_021_first_15/frame10.jpg"
 		#files = 'data/image_set_4/_image_set_4/frame14.jpg'
 		num_files = 1
 	elif(mode == 1):
-		#path = 'data/Test_Images/_021_first_15/'
-		path = 'data/image_set_4/_image_set_4/'
+		path = 'data/Test_Images/_021_first_15/'
+		#path = 'data/image_set_4/_image_set_4/'
 		files = os.listdir(path)
 		files.sort()
 		num_files = len(files)
 		for i in range(len(files)):
 			files[i] = path + files[i]
-			print(files[i])
 
 	#loop through the selected files
 	for i in range(num_files):
@@ -170,6 +156,8 @@ def main():
 			img_location = files
 		elif(mode == 1):
 			img_location = files[i]
+		if img_location == "data/Test_Images/_021_first_15/crops.npy":
+			continue
 		print(img_location)
 		
 		for crop in crop_windows:
@@ -180,13 +168,12 @@ def main():
 				plt.imshow(img)
 				plt.title(img_location)
 				plt.show()
-				print("Detected with crop window: ", crop)
-				plt.imshow(mask)
-				plt.title("mask, img: " + img_location)
-				plt.show()
+				print("Billboard detected, projecting onto HUD:")
+				driverside_eye_vec = np.array([1300,1552])
+				passenger_eye_vec = np.array([1850,1252])
+				center_eye_vec = np.array([2000,730])
+				billboard_homog_project(corners,mask,2,driverside_eye_vec,passenger_eye_vec,center_eye_vec)
 				break
-			else:
-				print("Rejected")
 
 
 if(__name__=="__main__"):
