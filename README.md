@@ -5,13 +5,14 @@ This is our final project for Fall '18 EECS 504 - computer vision at the Univers
 Billboards on the side of highways are a common type of ad in the United States. However, the driver must take their eyes off the road to look at the ad, which is both unsafe, and therefore leads to lower time looking at the ads. In the not too distant future, we envision autonomous vehicle systems allowing the driver to not have to pay attention to the road. In these scenarios, marketing agencies will want to increase the amount of time the passengers are looking at ads. In order to do this, we can use a dash camera to detect billboards in the current frame, and then project that billboard onto the windshield at the passenger's current point of view.
 
 # Screenshots/Demo Video
-Add a youtube link here later or maybe a some screenshots of intermediate steps like Hough lines, detecting intersections of lines, etc.
+Four sample gifs of raw input data and the resulting frame-by-frame windshield projections are found in the `gif_demos/` folder.
 
 # Code Example
 To run the billboard-detector_mult_crop_window algorithm, use the following command: 
 `python3 billboard-detector_mult_crop_window.py`
-There are a few variables in the `main()` function that can be changed. To run the algorithm over an entire dataset, set `mode = 1` (line 120) and set `path` (line 130) to the folder corresponding to the dataset of choice. To run the algorithm on a single image, set `mode = 0` and set `files` (line 125) to the image of choice. 
-For more verbose output, set `DEBUG = True` on line 32.
+There are a few variables in the `main()` function that can be changed. To run the algorithm over an entire dataset, set `mode = 1` (line 120) and set `path` (line 130) to the folder corresponding to the dataset of choice. In mode 1, the windshield projection images will be saved in the `output/` directory, with file names corresponding to the input image frame used to make the projection.
+To run the algorithm on a single image, set `mode = 0` and set `files` (line 125) to the image of choice.
+For more verbose output and to see the intermediate steps of Canny edge detection, Hough transform, Hough intersections, and billboard masking, set `DEBUG = True` on line 32.
 
 # Installation
 `git clone https://github.com/chriswernette/eecs504-final-project.git`
