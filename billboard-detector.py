@@ -219,12 +219,10 @@ def main():
 
         #check if billboard was detected, if so save image to file so we can create video
         if(detected):
-        	adLock_cnt = 4
-        	#mask_out = masked_image[:]
-        	proj_out = projected[:]
-            
+            adLock_cnt = 4
+            proj_out = projected[:]
+
         if (adLock_cnt > 0):
-            #cv2.imwrite(mask_name,mask_out)
             if(DEBUG):
                 print('using adlock')
             cv2.imwrite(projected_name,proj_out)
