@@ -6,6 +6,7 @@ to change the image you're running on'''
 import cv2
 import sys
 import os
+import shutil
 import numpy as np
 import matplotlib.pyplot as plt
 from skimage.morphology import convex_hull_image
@@ -47,14 +48,14 @@ def no_billboard(img):
     plt.title("No Billboard Detected")
     plt.show()
 
-
-
 def detect_billboard(img_location, crop):
     '''calls preprocess script to crop the image to the upper right hand quadrant,
     grayscale and blur the crop, find Canny edges and Hough lines from the cropped 
     grayscale. In the future, I'll add inputs so you can specify where the function
     looks for billboards in the image. Right now it just looks in the upper right'''
     img = cv2.imread(img_location)
+    masked_image = np.zeros_like(img)
+    projected = masked_image[:]
     img = cv2.cvtColor(img,cv2.COLOR_BGR2RGB)
     plt.imshow(img)
     plt.show()
@@ -78,7 +79,7 @@ def detect_billboard(img_location, crop):
 
     if lines is None:
         no_billboard(img_cropped2)
-        return
+        return masked_image, projected
 
     #put Hough lines on the cropped image one at a time just to visualize
     for line in lines:
@@ -99,7 +100,7 @@ def detect_billboard(img_location, crop):
     #changed to < 4, need at least 4 intersections to draw a rectangular chull
     if (len(intersections) <4):
         no_billboard(img_RGB)
-        return
+        return masked_image, projected
 
     #get (x,y) of the intersections so that we can plot them on top of image
     x = intersections[:,0]
@@ -151,10 +152,11 @@ def detect_billboard(img_location, crop):
         driverside_eye_vec = np.array([1300,1552])
         passenger_eye_vec = np.array([1850,1252])
         center_eye_vec = np.array([2000,730])
-        billboard_homog_project(corners_final,masked_img_chris,2,driverside_eye_vec,passenger_eye_vec,center_eye_vec)
+        projected = billboard_homog_project(corners_final,masked_img_chris,2,driverside_eye_vec,passenger_eye_vec,center_eye_vec)
     else:
         no_billboard(masked_img)
 
+    return masked_image, projected
     
 
 def main():
@@ -192,6 +194,8 @@ def main():
     coords = np.load(crop_name)
 
     #loop through the selected files
+    shutil.rmtree('output/', ignore_errors=True)
+    os.mkdir('output')
     for i in range(num_files):
         if(mode == 0):
             img_location = files
@@ -200,7 +204,14 @@ def main():
             crop = coords[i,:]
         if(DEBUG):
             print(img_location)
-        detect_billboard(img_location, crop)
+        masked_image, projected = detect_billboard(img_location, crop)
+
+        #check if billboard was detected, if so save image to file so we can create video
+        if(np.count_nonzero(masked_image) > 0):
+            mask_name = 'output/masked' + str(i).zfill(2) + '.jpg'
+            projected_name = 'output/projected' + str(i).zfill(2) + '.jpg'
+            cv2.imwrite(mask_name,masked_image)
+            cv2.imwrite(projected_name,projected)
 
 
 if(__name__=="__main__"):
