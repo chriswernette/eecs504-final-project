@@ -8,40 +8,40 @@ Billboards on the side of highways are a common type of ad in the United States.
 Add a youtube link here later or maybe a some screenshots of intermediate steps like Hough lines, detecting intersections of lines, etc.
 
 # Code Example
-Add a few lines of code that quickly allow the user to run the project, then add a few that would show them how to tweak parameters.
+To run the billboard-detector_mult_crop_window algorithm, use the following command: 
+`python3 billboard-detector_mult_crop_window.py`
+There are a few variables in the `main()` function that can be changed. To run the algorithm over an entire dataset, set `mode = 1` (line 120) and set `path` (line 130) to the folder corresponding to the dataset of choice. To run the algorithm on a single image, set `mode = 0` and set `files` (line 125) to the image of choice. 
+For more verbose output, set `DEBUG = True` on line 32.
 
 # Installation
 `git clone https://github.com/chriswernette/eecs504-final-project.git`
-This will download all the files necessary for the project. To run the project off some of our example videos simply type:
-@TODO Define this later
-`python3 wrapper-function-name.py input-video.filetype`
+This will download all the files necessary for the project.
 
 # Modules
-This section has a basic list of who is doing what and describes what the inputs and outputs of the modules should look like.
 
-## billboard-detector.py - team
+## billboard-detector.py
 File that will set up input files, call other modules. I intend to set this up so you can specify high level args like video filename/images directory when you call it from the command line.
 
-## preprocessing.py - Chris
+## preprocessing.py
 This function takes in an image and handles all the preprocessing. The output will be Hough lines in (x1, y1), (x2, y2) format. Submodules of this function are cropping, edge detection, and Hough lines. The preprocessing module will make calls to the sign masking module to exclude edges/Hough lines resulting from Michigan highway signs.
 
-## street_sign_mask.py - Alex
+## street_sign_mask.py
 This will take in an image as input and return an image mask of typical traffic signs like exit information, contruction signs, and road information. Traffic signs are detected based on the official color values for green, yellow, orange, and blue traffic signs. The output is used by preprocessing.py to exclude these types of rectangular objects on the road.
 
-## find_intersections.py - Chris
+## find_intersections.py
 This will take in the endpoints of all the lines, and then find their intersections by parameterizing each line. Also, it will reject intersections that are not close to 90 degrees to eliminate false positives. The output of this function is a list of (x,y) coordinates that meet the criteria of being a valid intersection of two nearly perpendicular lines. See [Line-Line Intersection](https://en.wikipedia.org/wiki/Line%E2%80%93line_intersection) given two points on each line section.
 
-## cluster_corners.py - Chris
+## cluster_corners.py
 This function will take in the list of intersections, and bin nearby intersections to a centroid. The output of this is a reduced number of possible intersections for the corners of the billboard. Uses the Mean Shift clustering method from scikit-learn, you can find a demo here [A demo of the mean-shift clustering algorithm](https://scikit-learn.org/stable/auto_examples/cluster/plot_mean_shift.html) and a summary of clustering algorithms available from scikit-learn can be found here [2.3 Clustering](https://scikit-learn.org/stable/modules/clustering.html#mean-shift)
 
-## Billboard Corner Hypothesis - Peter
+## Billboard Corner Hypothesis
 This function takes, as input, the set of Hough lines intsection centroids. A convex hull is fit to these clusters, which is combined with the input image to yield the billboard mask. The clusters are then sorted in way to approximate the four corners of a bounding box for the hypothetical billboard. The billboard mask and bounding box corners are outputs of the function.
 
-## Billboard Rejection - Peter
+## Billboard Rejection
 This function takes, as input, the set of corner outputs from the Billboard Corner Hypothesis function. The rejection function then calculates the angles and side lengths of the hypothetical bounding box. If the angles or sides are outside of the specified tolerance, the function rejects the billboard hypothesis.
 
-## Billboard extraction and projection onto Vehicle Windshield - Moe
+## Billboard extraction and projection onto Vehicle Windshield
 This function takes the 4 corner hypothesis and projects the billboard onto the Heads Up Display(HUD). The projection is a function of where the passengers eyes are fixed onto the windshield. 
 
-## Stitch Homography Images into Video - Team
+## Stitch Homography Images into Video
 @TODO I think if we put the adds projected onto the windshield all in one array this should be super easy there's gotta be code to do this.
