@@ -195,9 +195,11 @@ def main():
     crop_name = path + 'crops.npy'
     coords = np.load(crop_name)
 
+
     #loop through the selected files
     shutil.rmtree('output/', ignore_errors=True)
     os.mkdir('output')
+    adLock_cnt = 0
     for i in range(num_files):
         if(mode == 0):
             img_location = files
@@ -208,7 +210,10 @@ def main():
         if(DEBUG):
             print(img_location)
         masked_image, projected, detected = detect_billboard(img_location, crop)
+        mask_name = 'output/masked' + str(i).zfill(2) + '.jpg'
+        projected_name = 'output/projected' + str(i).zfill(2) + '.jpg'
 
+        #MY CODE
         #write blank image if not detected, otherwise write the projected image
         masked_image = cv2.cvtColor(masked_image,cv2.COLOR_RGB2BGR)
         projected = cv2.cvtColor(projected,cv2.COLOR_RGB2BGR)
@@ -216,6 +221,22 @@ def main():
         projected_name = 'output/projected' + str(i).zfill(2) + '.jpg'
         #cv2.imwrite(mask_name,masked_image)
         cv2.imwrite(projected_name,projected)
+
+        #PETER'S CODE
+        #check if billboard was detected, if so save image to file so we can create video
+        if(detected):
+        	adLock_cnt = 4
+        	mask_out = cv2.cvtColor(masked_img,cv2.COLOR_BGR2RGB)
+        	proj_out = cv2.cvtColor(projected,cv2.COLOR_BGR2RGB)
+            
+        if adLock_cnt > 0:
+            cv2.imwrite(mask_name,mask_out)
+            cv2.imwrite(projected_name,proj_out)
+        else:
+        	# TODO: Write black screen.
+        	# Don't forget BGR2RGB conversion (if necessary)
+        adLock_cnt -= 1
+
 
 
 if(__name__=="__main__"):
